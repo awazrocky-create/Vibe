@@ -101,451 +101,370 @@
       </div>
     </div>
 
-    <!-- TAB 4: PROFILE -->
-    <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col overflow-y-auto no-scrollbar bg-slate-950 text-slate-800">
-      
-      <!-- Top Cover Poster -->
-      <div class="relative w-full h-44 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 overflow-hidden shrink-0">
-        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="w-full h-full object-cover opacity-60 mix-blend-overlay" />
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/40"></div>
-        <div class="absolute top-3 left-3 text-xs font-bold text-amber-300 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/30 flex items-center space-x-1">
-          <span>🔥 ROCKS AGENCY</span>
+    ```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Profile Card Application</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #fff; }
+    /* Custom scrollbars and transitions */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+    .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-start items-center p-0 m-0 selection:bg-pink-500 selection:text-white">
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toast" class="fixed top-5 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 bg-emerald-600 text-white text-xs px-4 py-2.5 rounded-xl shadow-2xl font-semibold flex items-center space-x-2 border border-emerald-500/50">
+    <span>✨</span> <span id="toastMsg">Changes saved successfully!</span>
+  </div>
+
+  <!-- EDIT PROFILE MODAL DIALOG -->
+  <div id="editProfileModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-5 fade-in relative">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-black text-pink-400 tracking-wider uppercase flex items-center space-x-2">
+          <span>✏️</span> <span>Edit Profile</span>
+        </h3>
+        <button onclick="closeEditModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+      </div>
+
+      <!-- 1. Profile Photo Upload -->
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-300 block">Profile Photo (Upload from device)</label>
+        <div class="flex items-center space-x-3">
+          <img id="modalAvatarPreview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" class="w-12 h-12 rounded-xl object-cover border border-slate-700" alt="Preview" />
+          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-600 file:text-white hover:file:bg-pink-500 cursor-pointer" />
         </div>
-        <!-- EDIT BUTTON -->
-        <button onclick="openEditModal()" class="absolute top-3 right-3 text-xs font-bold text-white bg-pink-600/80 hover:bg-pink-600 backdrop-blur-md px-3 py-1 rounded-full border border-pink-400 shadow-md transition-all">
-          ✏️ Edit Profile
+      </div>
+
+      <!-- 2. Name Field -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-slate-300 block">Name</label>
+        <input id="modalNameInput" type="text" placeholder="Enter your name" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none focus:border-pink-500 transition-all" />
+      </div>
+
+      <!-- 3. Date of Birth -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-slate-300 block">Date of Birth</label>
+        <input id="modalDobInput" type="text" placeholder="e.g. 15 Aug 1998" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none focus:border-pink-500 transition-all" />
+      </div>
+
+      <!-- 4. Gender Dropdown -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-slate-300 block">Gender</label>
+        <select id="modalGenderSelect" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none focus:border-pink-500 transition-all">
+          <option value="Male ♂">Male ♂</option>
+          <option value="Female ♀">Female ♀</option>
+          <option value="Other ⚧">Other / Prefer not to say ⚧</option>
+        </select>
+      </div>
+
+      <!-- 5. About / Bio -->
+      <div class="space-y-1.5">
+        <label class="text-xs font-bold text-slate-300 block">About / Bio</label>
+        <textarea id="modalBioInput" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-white outline-none focus:border-pink-500 transition-all resize-none"></textarea>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex space-x-3 pt-2">
+        <button type="button" onclick="saveModalChanges()" class="w-1/2 py-2.5 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 rounded-xl text-xs font-bold transition-all shadow-lg shadow-pink-600/20 cursor-pointer">
+          Save Changes
         </button>
-      </div>
-
-      <!-- Avatar & Main User Card -->
-      <div class="relative px-4 pb-4 bg-slate-950 text-slate-100 -mt-10 rounded-t-3xl border-t border-slate-800">
-        <div class="flex justify-between items-end">
-          <div class="relative -mt-12">
-            <div class="w-20 h-20 rounded-2xl p-1 bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 shadow-xl">
-              <img id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-full h-full object-cover rounded-xl" />
-            </div>
-          </div>
-          <div class="flex space-x-4 text-center text-xs pb-1">
-            <div class="cursor-pointer" onclick="showToast('Following: 27 users')">
-              <span class="font-extrabold text-sm text-white block">27</span>
-              <span class="text-[10px] text-slate-400">Following</span>
-            </div>
-            <div class="cursor-pointer" onclick="showToast('Followers: 796 users')">
-              <span class="font-extrabold text-sm text-white block">796</span>
-              <span class="text-[10px] text-slate-400">Followers</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-3">
-          <h2 class="text-lg font-black tracking-wide text-white flex items-center space-x-1">
-            <span id="profileNameDisplay">💫 T A N I S H K 💫</span>
-          </h2>
-          <p onclick="copyID()" class="text-[11px] text-slate-400 font-mono mt-0.5 cursor-pointer hover:text-pink-400 transition-colors inline-block">
-            ID: <span id="profileIDDisplay">68891305</span> 📋
-          </p>
-
-          <!-- Badges Row -->
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <span class="bg-blue-600/30 text-blue-300 border border-blue-500/30 text-[9px] px-2 py-0.5 rounded-full font-bold flex items-center space-x-1">
-              <span>♂ 24</span>
-            </span>
-            <span class="bg-purple-600/30 text-purple-300 border border-purple-500/30 text-[9px] px-2 py-0.5 rounded-full font-bold">
-              🔮 94
-            </span>
-            <span class="bg-gradient-to-r from-pink-600 to-purple-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold shadow-sm">
-              Marquis
-            </span>
-            <span class="bg-gradient-to-r from-amber-500 to-pink-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold shadow-sm">
-              Legend Top2
-            </span>
-          </div>
-        </div>
-
-        <!-- Sub Tabs -->
-        <div class="flex border-b border-slate-800 mt-4 text-xs font-bold text-slate-400 space-x-6">
-          <span id="subtab-btn-profile" onclick="switchSubTab('profile')" class="text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer">Profile</span>
-          <span id="subtab-btn-honor" onclick="switchSubTab('honor')" class="hover:text-slate-200 pb-2 cursor-pointer">Honor</span>
-        </div>
-
-        <!-- PROFILE CONTENT SUBTAB -->
-        <div id="subtab-content-profile">
-          <!-- Family Banner -->
-          <div class="mt-4 p-3 rounded-2xl bg-gradient-to-r from-purple-900/60 via-indigo-900/50 to-purple-950/70 border border-purple-500/40 relative overflow-hidden shadow-lg">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100" class="w-10 h-10 rounded-xl object-cover border border-amber-400" />
-                <div>
-                  <h4 class="font-extrabold text-xs text-amber-300">VIDHAN ( SANDEEP )</h4>
-                  <p class="text-[10px] text-purple-200">👥 147 / 200 Members</p>
-                </div>
-              </div>
-              <span class="text-xs bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded-full shadow-md">⭐ 5.0</span>
-            </div>
-          </div>
-
-          <!-- Top Supporter Podium Banner -->
-          <div class="mt-4 p-3 rounded-2xl bg-gradient-to-b from-indigo-950/70 to-slate-900 border border-indigo-500/30">
-            <h4 class="text-xs font-bold text-slate-300 mb-2">Top Supporter</h4>
-            <div class="flex items-center justify-around py-2">
-              <div class="text-center cursor-pointer" onclick="showToast('Top 2 Supporter')">
-                <div class="w-10 h-10 rounded-full border-2 border-slate-400 mx-auto overflow-hidden">
-                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-full h-full object-cover" />
-                </div>
-                <span class="text-[9px] text-slate-400 block mt-1">Top 2</span>
-              </div>
-              <div class="text-center -mt-2 cursor-pointer" onclick="showToast('Top 1 Supporter')">
-                <div class="w-12 h-12 rounded-full border-2 border-amber-400 mx-auto overflow-hidden shadow-lg">
-                  <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-full h-full object-cover" />
-                </div>
-                <span class="text-[10px] font-bold text-amber-400 block mt-1">👑 Top 1</span>
-              </div>
-              <div class="text-center cursor-pointer" onclick="showToast('Top 3 Supporter')">
-                <div class="w-10 h-10 rounded-full border-2 border-amber-700 mx-auto overflow-hidden">
-                  <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100" class="w-full h-full object-cover" />
-                </div>
-                <span class="text-[9px] text-slate-400 block mt-1">Top 3</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Levels Card -->
-          <div class="mt-4">
-            <h4 class="text-xs font-bold text-slate-300 mb-2">Level</h4>
-            <div class="grid grid-cols-2 gap-2">
-              <div class="p-3 rounded-2xl bg-gradient-to-r from-purple-600/40 to-indigo-600/40 border border-purple-500/30 flex items-center justify-between cursor-pointer" onclick="showToast('User Level: 94')">
-                <div>
-                  <span class="text-[10px] text-slate-300 block">User level</span>
-                  <span class="font-black text-base text-white">94</span>
-                </div>
-                <span class="text-lg">🔮</span>
-              </div>
-              <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/40 to-rose-600/40 border border-pink-500/30 flex items-center justify-between cursor-pointer" onclick="showToast('Host Level: 93')">
-                <div>
-                  <span class="text-[10px] text-slate-300 block">Host level</span>
-                  <span class="font-black text-base text-white">93</span>
-                </div>
-                <span class="text-lg">👑</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Introduce Bio -->
-          <div class="mt-4">
-            <h4 class="text-xs font-bold text-slate-300 mb-2">Introduce</h4>
-            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
-              <p id="profileIntroBio" class="italic text-purple-300">“ Join Our Team ”</p>
-              <p id="profileAgencyCode" class="font-semibold text-slate-400">Agency Code 68891305</p>
-            </div>
-          </div>
-
-          <!-- About me Chips -->
-          <div class="mt-4">
-            <h4 class="text-xs font-bold text-slate-300 mb-2">About me</h4>
-            <div class="flex space-x-2">
-              <span class="bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Region: India')">
-                <span>🇮🇳</span> <span>India</span>
-              </span>
-              <span class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-3 py-1 rounded-full text-xs font-bold cursor-pointer" onclick="showToast('Language: English')">
-                A English
-              </span>
-            </div>
-          </div>
-
-          <!-- Interests Chips -->
-          <div class="mt-4 pb-6">
-            <h4 class="text-xs font-bold text-slate-300 mb-2">Interest</h4>
-            <div class="flex flex-wrap gap-2">
-              <span class="bg-emerald-950 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Fishing 🎣')">
-                <span>🎣</span> <span>Fishing</span>
-              </span>
-              <span class="bg-cyan-950 border border-cyan-500/30 text-cyan-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Pop 🎧')">
-                <span>🎧</span> <span>Pop</span>
-              </span>
-              <span class="bg-sky-950 border border-sky-500/30 text-sky-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Classical 🎻')">
-                <span>🎻</span> <span>Classical</span>
-              </span>
-              <span class="bg-purple-950 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: R&B 🎵')">
-                <span>🎵</span> <span>R&B</span>
-              </span>
-              <span class="bg-lime-950 border border-lime-500/30 text-lime-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Bike 🏍️')">
-                <span>🏍️</span> <span>Bike</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- HONOR SUBTAB CONTENT (HIDDEN BY DEFAULT) -->
-        <div id="subtab-content-honor" class="hidden mt-4 pb-6 space-y-3">
-          <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-900/40 to-purple-900/40 border border-amber-500/30 text-center space-y-2">
-            <span class="text-3xl">🏆</span>
-            <h4 class="font-bold text-sm text-amber-300">Rocks Agency Hall of Fame</h4>
-            <p class="text-xs text-slate-300">Awarded for top monthly support & live room contributions.</p>
-          </div>
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs flex justify-between items-center">
-            <span>🎖️ VIP Diamond Medal</span>
-            <span class="text-emerald-400 font-bold">Unlocked</span>
-          </div>
-          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs flex justify-between items-center">
-            <span>👑 Rocks Master Badge</span>
-            <span class="text-amber-400 font-bold">Level 5</span>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-
-  </main>
-  <!-- EDIT PROFILE MODAL POPUP -->
-  <div id="editProfileModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs p-5 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="font-bold text-sm text-pink-400">Edit Profile Details</h3>
-        <button onclick="closeEditModal()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block text-slate-400 mb-1">Display Name</label>
-          <input id="editNameInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1">User ID</label>
-          <input id="editIDInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1">Introduce Tagline</label>
-          <input id="editBioInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
-        </div>
-        <div>
-          <label class="block text-slate-400 mb-1">Avatar Image URL</label>
-          <input id="editAvatarInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
-        </div>
-      </div>
-
-      <div class="flex space-x-2 pt-2">
-        <button onclick="closeEditModal()" class="w-1/2 py-2 bg-slate-800 rounded-xl font-bold text-xs">Cancel</button>
-        <button onclick="saveProfileChanges()" class="w-1/2 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-bold text-xs shadow-md">Save</button>
+        <button type="button" onclick="closeEditModal()" class="w-1/2 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-700 cursor-pointer">
+          Cancel
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- BOTTOM NAVIGATION BAR -->
-  <nav class="absolute bottom-0 left-0 right-0 h-16 bg-slate-900/95 border-t border-slate-800 backdrop-blur-md flex items-center justify-around px-2 z-40">
-    <button onclick="switchTab('feed')" class="nav-btn flex flex-col items-center text-pink-500" data-tab="feed">
-      <span class="text-lg">🏠</span>
-      <span class="text-[10px] font-medium">Feed</span>
-    </button>
-    <button onclick="switchTab('mask')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="mask">
-      <span class="text-lg">🎭</span>
-      <span class="text-[10px] font-medium">Mask Room</span>
-    </button>
-    <button onclick="switchTab('chats')" class="nav-btn flex flex-col items-center text-slate-400 relative" data-tab="chats">
-      <span class="text-lg">💬</span>
-      <span class="text-[10px] font-medium">Chats</span>
-    </button>
-    <button onclick="switchTab('profile')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="profile">
-      <span class="text-lg">👤</span>
-      <span class="text-[10px] font-medium">Profile</span>
-    </button>
-  </nav>
+  <!-- FULL PAGE PROFILE CARD CONTAINER -->
+  <div class="w-full min-h-screen sm:max-w-md bg-slate-900 border-x border-slate-800 flex flex-col justify-start relative shadow-2xl">
+    
+    <!-- TOP CONTROLS BAR -->
+    <div class="absolute top-4 right-4 z-20 flex items-center space-x-2">
+      <!-- Edit Profile Button -->
+      <button onclick="openEditModal()" class="bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full border border-white/20 transition-all font-semibold flex items-center space-x-1 shadow-lg">
+        <span>✏️</span> <span>Edit Profile</span>
+      </button>
+      <!-- Change Background Button -->
+      <button onclick="toggleBgEditor()" class="bg-black/60 hover:bg-black/80 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full border border-white/20 transition-all font-semibold shadow-lg">
+        ⚙️ BG
+      </button>
+    </div>
 
-  <!-- JAVASCRIPT LOGIC -->
+    <!-- BACKGROUND COVER IMAGE -->
+    <div id="profileBg" class="relative w-full h-[30rem] bg-gradient-to-r from-purple-800 via-indigo-900 to-slate-900 bg-cover bg-center transition-all duration-300 shrink-0">
+      <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-black/30"></div>
+    </div>
+
+    <!-- BACKGROUND CUSTOMIZER PANEL -->
+    <div id="bgEditorPanel" class="hidden absolute top-16 left-4 right-4 z-30 bg-slate-950/95 border border-slate-700 p-4 rounded-2xl shadow-2xl space-y-3 fade-in backdrop-blur-xl">
+      <div class="flex justify-between items-center">
+        <p class="text-xs font-bold text-pink-400">Customize Background Image:</p>
+        <button onclick="toggleBgEditor()" class="text-slate-400 hover:text-white text-xs">✕</button>
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-medium text-slate-300 block">Upload Background from Device</label>
+        <input type="file" id="bgFileInput" accept="image/*" onchange="handleBgImageUpload(event)" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-600 file:text-white hover:file:bg-pink-500 cursor-pointer" />
+      </div>
+      <div class="flex space-x-2 pt-1">
+        <button onclick="resetBackground()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold transition-all border border-slate-700">Reset Default BG</button>
+      </div>
+    </div>
+
+    <!-- MAIN PROFILE DETAILS -->
+    <div class="relative px-5 pb-12 bg-slate-900 -mt-10 rounded-t-3xl border-t border-slate-800 flex-1">
+      
+      <!-- User Avatar & Quick Status -->
+      <div class="relative -mt-12 mb-4 flex items-end justify-between">
+        <div class="relative">
+          <div class="w-24 h-24 rounded-3xl p-1 bg-gradient-to-tr from-pink-500 via-purple-500 to-amber-400 shadow-xl inline-block transition-transform duration-300 hover:scale-105">
+            <img id="userAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300" class="w-full h-full object-cover rounded-2xl" alt="User Avatar" onerror="this.src='https://placehold.co/300x300/1e293b/ffffff?text=Avatar'" />
+          </div>
+        </div>
+        
+        <div class="pb-1">
+          <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Active Status</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- User Name & ID -->
+      <div class="space-y-1">
+        <h2 id="userNameDisplay" class="text-xl font-black tracking-wide text-white">तनिष्क शर्मा</h2>
+        <p id="userIdDisplay" class="text-xs text-slate-400 font-mono">User ID: #88921045</p>
+      </div>
+
+      <!-- Personal Info Cards Section -->
+      <div class="mt-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-bold text-pink-400 tracking-wider uppercase">Basic Information</h3>
+        </div>
+        
+        <!-- Grid: DOB & Gender -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <!-- DOB Card -->
+          <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1 transition-all hover:border-slate-700">
+            <span class="text-slate-400 block text-[10px] font-medium">Date of Birth</span>
+            <div id="dobDisplay" class="font-bold text-slate-100 text-sm">15 Aug 1998</div>
+          </div>
+
+          <!-- Gender Card -->
+          <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 space-y-1 transition-all hover:border-slate-700">
+            <span class="text-slate-400 block text-[10px] font-medium">Gender</span>
+            <div id="genderDisplay" class="font-bold text-slate-100 text-sm">Male ♂</div>
+          </div>
+        </div>
+
+        <!-- Country / Region Card -->
+        <div class="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between text-xs transition-all hover:border-slate-700">
+          <span class="text-slate-400 text-[11px] font-medium">Country / Region</span>
+          <span id="countryDisplay" class="font-bold text-slate-100 flex items-center space-x-2 text-sm">
+            <span>🇮🇳</span> <span>India</span>
+          </span>
+        </div>
+
+        <!-- Bio / About Section -->
+        <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5 transition-all hover:border-slate-700">
+          <span class="text-slate-400 block text-[10px] font-medium uppercase tracking-wider">About Bio</span>
+          <div id="bioDisplay" class="text-xs text-slate-300 leading-relaxed">
+            Passionate developer & creator exploring modern web experiences, UI/UX aesthetics, and interactive applications.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER INFO / RESET DATA -->
+      <div class="mt-8 pt-6 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-500">
+        <span>Profile App v2.2</span>
+        <button onclick="resetAllAppData()" class="hover:text-pink-400 transition-colors underline">Reset Default Profile</button>
+      </div>
+
+    </div>
+
+  </div>
+
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
-    let autoRefreshInterval = null;
+    // Default profile state
+    const DEFAULT_PROFILE = {
+      name: "तनिष्क शर्मा",
+      userId: "#88921045",
+      dob: "15 Aug 1998",
+      gender: "Male ♂",
+      country: "🇮🇳 India",
+      bio: "Passionate developer & creator exploring modern web experiences, UI/UX aesthetics, and interactive applications.",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300",
+      bgUrl: ""
+    };
 
-    // Toast Notification logic
-    function showToast(message) {
+    let tempUploadedAvatar = "";
+
+    // Toast notification utility
+    function showToast(message, isError = false) {
       const toast = document.getElementById('toast');
-      toast.innerText = message;
-      toast.classList.remove('opacity-0');
-      toast.classList.add('opacity-100');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = message;
+      toast.className = `fixed top-5 z-50 transform translate-y-0 opacity-100 transition-all duration-300 ${isError ? 'bg-rose-600 border-rose-500/50' : 'bg-emerald-600 border-emerald-500/50'} text-white text-xs px-4 py-2.5 rounded-xl shadow-2xl font-semibold flex items-center space-x-2 border`;
+      
       setTimeout(() => {
-        toast.classList.remove('opacity-100');
-        toast.classList.add('opacity-0');
-      }, 2000);
+        toast.className = 'fixed top-5 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 bg-emerald-600 text-white text-xs px-4 py-2.5 rounded-xl shadow-2xl font-semibold flex items-center space-x-2 border border-emerald-500/50';
+      }, 3000);
     }
 
-    // Switch Main Bottom Navigation Tabs
-    function switchTab(tabId) {
-      document.querySelectorAll('.app-tab').forEach(tab => tab.classList.add('hidden'));
-      const activeTab = document.getElementById('tab-' + tabId);
-      if(activeTab) activeTab.classList.remove('hidden');
+    // Toggle Background Editor panel
+    function toggleBgEditor() {
+      const panel = document.getElementById('bgEditorPanel');
+      panel.classList.toggle('hidden');
+    }
 
-      document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('text-pink-500');
-        btn.classList.add('text-slate-400');
-        if(btn.getAttribute('data-tab') === tabId) {
-          btn.classList.remove('text-slate-400');
-          btn.classList.add('text-pink-500');
-        }
-      });
-
-      if(tabId !== 'chats') {
-        closeDirectChat();
+    // Handle Background File Upload & convert to Base64
+    function handleBgImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const bgUrl = e.target.result;
+          document.getElementById('profileBg').style.backgroundImage = `url('${bgUrl}')`;
+          localStorage.setItem('full_profile_bg', bgUrl);
+          toggleBgEditor();
+          showToast("Background image uploaded & applied successfully!");
+        };
+        reader.readAsDataURL(file);
       }
     }
 
-    // Switch Sub Tabs Inside Profile (Profile vs Honor)
-    function switchSubTab(type) {
-      const pTab = document.getElementById('subtab-content-profile');
-      const hTab = document.getElementById('subtab-content-honor');
-      const pBtn = document.getElementById('subtab-btn-profile');
-      const hBtn = document.getElementById('subtab-btn-honor');
-
-      if(type === 'profile') {
-        pTab.classList.remove('hidden');
-        hTab.classList.add('hidden');
-        pBtn.className = "text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer";
-        hBtn.className = "hover:text-slate-200 pb-2 cursor-pointer";
-      } else {
-        hTab.classList.remove('hidden');
-        pTab.classList.add('hidden');
-        hBtn.className = "text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer";
-        pBtn.className = "hover:text-slate-200 pb-2 cursor-pointer";
-      }
+    // Reset background image
+    function resetBackground() {
+      document.getElementById('profileBg').style.backgroundImage = "linear-gradient(to right, rgb(107, 33, 168), rgb(49, 46, 129), rgb(15, 23, 42))";
+      localStorage.removeItem('full_profile_bg');
+      const bgInput = document.getElementById('bgFileInput');
+      if(bgInput) bgInput.value = '';
+      toggleBgEditor();
+      showToast("Background reset to default.");
     }
 
-    // Copy ID functionality
-    function copyID() {
-      const idText = document.getElementById('profileIDDisplay').innerText;
-      navigator.clipboard.writeText(idText);
-      showToast('Copied ID: ' + idText);
-    }
-
-    // Modal Edit Profile Logic
+    // Open Edit Profile Modal
     function openEditModal() {
-      document.getElementById('editNameInput').value = document.getElementById('profileNameDisplay').innerText;
-      document.getElementById('editIDInput').value = document.getElementById('profileIDDisplay').innerText;
-      document.getElementById('editBioInput').value = document.getElementById('profileIntroBio').innerText.replace(/[“"]/g, '');
-      document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
+      const currentAvatar = document.getElementById('userAvatarImg').src;
+      tempUploadedAvatar = currentAvatar;
+      document.getElementById('modalAvatarPreview').src = currentAvatar;
+
+      // Populate modal inputs with currently displayed values
+      document.getElementById('modalNameInput').value = document.getElementById('userNameDisplay').innerText;
+      document.getElementById('modalDobInput').value = document.getElementById('dobDisplay').innerText;
+      document.getElementById('modalGenderSelect').value = document.getElementById('genderDisplay').innerText;
+      document.getElementById('modalBioInput').value = document.getElementById('bioDisplay').innerText.trim();
+      document.getElementById('avatarFileInput').value = "";
+
       document.getElementById('editProfileModal').classList.remove('hidden');
     }
 
+    // Close Edit Profile Modal
     function closeEditModal() {
       document.getElementById('editProfileModal').classList.add('hidden');
     }
 
-    function saveProfileChanges() {
-      const name = document.getElementById('editNameInput').value.trim();
-      const id = document.getElementById('editIDInput').value.trim();
-      const bio = document.getElementById('editBioInput').value.trim();
-      const avatar = document.getElementById('editAvatarInput').value.trim();
-
-      if(name) {
-        document.getElementById('profileNameDisplay').innerText = name;
-        localStorage.setItem('vibespace_name', name);
+    // Handle Image File Upload & convert to Base64
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempUploadedAvatar = e.target.result;
+          document.getElementById('modalAvatarPreview').src = tempUploadedAvatar;
+        };
+        reader.readAsDataURL(file);
       }
-      if(id) {
-        document.getElementById('profileIDDisplay').innerText = id;
-        document.getElementById('profileAgencyCode').innerText = "Agency Code " + id;
-        localStorage.setItem('vibespace_id', id);
-      }
-      if(bio) {
-        document.getElementById('profileIntroBio').innerText = `“ ${bio} ”`;
-        localStorage.setItem('vibespace_bio', bio);
-      }
-      if(avatar) {
-        document.getElementById('profileAvatarImg').src = avatar;
-        localStorage.setItem('vibespace_avatar', avatar);
-      }
-
-      closeEditModal();
-      showToast('Profile Updated Successfully!');
     }
 
-    // Load Saved Data from LocalStorage on Startup
-    function loadSavedProfile() {
-      const sName = localStorage.getItem('vibespace_name');
-      const sID = localStorage.getItem('vibespace_id');
-      const sBio = localStorage.getItem('vibespace_bio');
-      const sAvatar = localStorage.getItem('vibespace_avatar');
+    // Save modal changes to profile
+    function saveModalChanges() {
+      const name = document.getElementById('modalNameInput').value.trim() || DEFAULT_PROFILE.name;
+      const dob = document.getElementById('modalDobInput').value.trim() || DEFAULT_PROFILE.dob;
+      const gender = document.getElementById('modalGenderSelect').value;
+      const bio = document.getElementById('modalBioInput').value.trim() || DEFAULT_PROFILE.bio;
+      const avatar = tempUploadedAvatar || DEFAULT_PROFILE.avatar;
 
-      if(sName) document.getElementById('profileNameDisplay').innerText = sName;
-      if(sID) {
-        document.getElementById('profileIDDisplay').innerText = sID;
-        document.getElementById('profileAgencyCode').innerText = "Agency Code " + sID;
-      }
-      if(sBio) document.getElementById('profileIntroBio').innerText = `“ ${sBio} ”`;
-      if(sAvatar) document.getElementById('profileAvatarImg').src = sAvatar;
-    }
+      // Update UI displays
+      document.getElementById('userNameDisplay').innerText = name;
+      document.getElementById('dobDisplay').innerText = dob;
+      document.getElementById('genderDisplay').innerText = gender;
+      document.getElementById('bioDisplay').innerText = bio;
+      document.getElementById('userAvatarImg').src = avatar;
 
-    // Google Sheets Direct Chat Logic
-    function openDirectChat(userName, userId, avatar) {
-      document.getElementById('chatListView').classList.add('hidden');
-      document.getElementById('chatConversationView').classList.remove('hidden');
-      document.getElementById('activeChatUserName').innerText = userName + ' (' + userId + ')';
-      if(avatar) document.getElementById('activeChatAvatar').src = avatar;
+      // Save to LocalStorage
+      const savedDataStr = localStorage.getItem('full_profile_data');
+      const existingData = savedDataStr ? JSON.parse(savedDataStr) : DEFAULT_PROFILE;
       
-      fetchMessages();
-      if(!autoRefreshInterval) {
-        autoRefreshInterval = setInterval(fetchMessages, 3000);
-      }
-    }
-
-    function closeDirectChat() {
-      document.getElementById('chatConversationView').classList.add('hidden');
-      document.getElementById('chatListView').classList.remove('hidden');
-      if(autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-      }
-    }
-
-    function fetchMessages() {
-      fetch(SCRIPT_URL)
-        .then(res => res.json())
-        .then(data => {
-          const history = document.getElementById('messageHistory');
-          if (!data || data.length === 0) {
-            history.innerHTML = `<div class="text-center text-slate-500 py-4">No messages yet. Say hello!</div>`;
-            return;
-          }
-          let html = '';
-          data.forEach(item => {
-            const isMe = item.sender === "Rahul";
-            html += `
-              <div class="p-2.5 rounded-2xl ${isMe ? 'bg-purple-900/60 border border-purple-500/30 max-w-[80%] ml-auto text-right' : 'bg-slate-900 border border-slate-800 max-w-[80%] mr-auto'} shadow-md">
-                <span class="text-[9px] text-pink-400 block font-bold mb-0.5">${item.sender}</span>
-                <p class="text-xs text-slate-100">${item.message}</p>
-                <span class="text-[8px] text-slate-400 block text-right mt-1">${item.timestamp}</span>
-              </div>
-            `;
-          });
-          history.innerHTML = html;
-          history.scrollTop = history.scrollHeight;
-        })
-        .catch(err => console.error("Error fetching messages:", err));
-    }
-
-    function sendChatMessage() {
-      const input = document.getElementById('chatMessageInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const payload = {
-        sender: "Rahul",
-        message: text
+      const profileData = { 
+        ...existingData,
+        name,
+        dob, 
+        gender, 
+        bio,
+        avatar 
       };
 
-      input.value = '';
+      localStorage.setItem('full_profile_data', JSON.stringify(profileData));
+      localStorage.setItem('full_profile_avatar', avatar);
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(() => {
-        setTimeout(fetchMessages, 500);
-      }).catch(err => console.error("Error sending message:", err));
+      closeEditModal();
+      showToast("Profile updated successfully!");
     }
 
-    // Initialize Saved Profile Data on Page Load
+    // Reset all application data
+    function resetAllAppData() {
+      if(confirm("Are you sure you want to reset all profile data to default?")) {
+        localStorage.removeItem('full_profile_data');
+        localStorage.removeItem('full_profile_bg');
+        localStorage.removeItem('full_profile_avatar');
+        loadSavedData();
+        showToast("Profile reset to defaults.");
+      }
+    }
+
+    // Load saved data on window load
+    function loadSavedData() {
+      const savedBg = localStorage.getItem('full_profile_bg');
+      if(savedBg) {
+        document.getElementById('profileBg').style.backgroundImage = `url('${savedBg}')`;
+      }
+
+      const savedDataStr = localStorage.getItem('full_profile_data');
+      const data = savedDataStr ? JSON.parse(savedDataStr) : DEFAULT_PROFILE;
+
+      document.getElementById('userNameDisplay').innerText = data.name;
+      document.getElementById('userIdDisplay').innerText = data.userId.startsWith('#') ? `User ID: ${data.userId}` : `User ID: #${data.userId}`;
+      document.getElementById('dobDisplay').innerText = data.dob;
+      document.getElementById('genderDisplay').innerText = data.gender;
+      document.getElementById('countryDisplay').innerHTML = `<span>${data.country}</span>`;
+      document.getElementById('bioDisplay').innerText = data.bio;
+
+      const savedAvatar = localStorage.getItem('full_profile_avatar') || data.avatar || DEFAULT_PROFILE.avatar;
+      document.getElementById('userAvatarImg').src = savedAvatar;
+    }
+
     window.onload = function() {
-      loadSavedProfile();
-    };
+      loadSavedData();
+    }
   </script>
 </body>
 </html>
+```
+    
