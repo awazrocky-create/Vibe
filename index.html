@@ -1,1555 +1,295 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VibeSpace - Audio & Video Social Platform</title>
-  <!-- Tailwind CSS CDN -->
+  <title>VibeSpace - Audio & Video Social Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Font Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    /* Custom Scrollbar Hide */
+    body { font-family: 'Inter', sans-serif; background-color: #030712; color: #fff; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    
-    /* Glowing Effects */
-    .glow-pink { box-shadow: 0 0 25px rgba(236, 72, 153, 0.4); }
-    .glow-purple { box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
-    .glow-amber { box-shadow: 0 0 25px rgba(245, 158, 11, 0.4); }
-    
-    /* Animated Audio Equalizer */
-    .eq-bar { animation: eq 0.8s ease-in-out infinite alternate; }
-    @keyframes eq {
-      0% { height: 15%; }
-      100% { height: 100%; }
-    }
-    .eq-bar:nth-child(1) { animation-delay: 0.1s; }
-    .eq-bar:nth-child(2) { animation-delay: 0.3s; }
-    .eq-bar:nth-child(3) { animation-delay: 0.2s; }
-    .eq-bar:nth-child(4) { animation-delay: 0.5s; }
-    .eq-bar:nth-child(5) { animation-delay: 0.4s; }
   </style>
 </head>
-<body class="bg-slate-950 text-white selection:bg-pink-500 selection:text-white min-h-screen pb-28">
+<body class="h-screen flex flex-col overflow-hidden m-0 p-0 bg-slate-950">
 
   <!-- TOP HEADER -->
-  <header class="sticky top-0 z-30 px-4 py-3 flex items-center justify-between border-b border-purple-500/20 bg-slate-950/90 backdrop-blur-xl">
-    <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('feed')">
-      <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 flex items-center justify-center font-black text-white text-xl shadow-lg shadow-pink-500/30">
-        <i class="fa-solid fa-wave-square"></i>
-      </div>
-      <div>
-        <h1 class="text-xl font-black tracking-wider bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">VibeSpace</h1>
-        <p class="text-[9px] text-pink-400/90 font-bold tracking-widest uppercase">Audio & Video Social Hub</p>
-      </div>
-    </div>
-
-    <!-- Wallet Balance & Top Up Button -->
+  <header class="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-b border-purple-500/20 z-30 shrink-0">
     <div class="flex items-center space-x-2">
-      <button onclick="toggleModal('rechargeModal', true)" class="flex items-center space-x-2 bg-gradient-to-r from-amber-500/20 to-amber-600/10 border border-amber-400/40 text-amber-300 px-3.5 py-1.5 rounded-full font-bold text-xs hover:bg-amber-500/30 transition-all shadow-md shadow-amber-500/10 active:scale-95">
-        <i class="fa-solid fa-coins text-amber-400"></i>
-        <span><span id="coinBalanceDisplay">150</span> Coins</span>
-        <span class="bg-amber-400 text-slate-950 rounded-full w-4 h-4 flex items-center justify-center font-black text-[10px] ml-1">+</span>
-      </button>
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-lg shadow-md">V</div>
+      <h1 class="text-lg font-black tracking-wider bg-gradient-to-r from-pink-400 to-indigo-400 bg-clip-text text-transparent">VibeSpace</h1>
+    </div>
+    <div class="flex items-center space-x-2">
+      <span class="bg-amber-500/20 border border-amber-400/40 text-amber-300 px-3 py-1 rounded-full font-bold text-xs">
+        🪙 <span id="coinBalanceDisplay">150</span> Coins
+      </span>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-xl mx-auto p-3.5 space-y-4">
+  <!-- MAIN CONTAINER WITH TABS -->
+  <main class="flex-1 relative flex flex-col overflow-hidden max-w-md w-full mx-auto pb-16">
 
-    <!-- USER ID SEARCH BAR -->
-    <form onsubmit="handleUserSearch(event)" class="flex gap-2">
-      <div class="relative flex-1">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-xs text-slate-400"></i>
-        <input 
-          id="searchInput"
-          type="text" 
-          placeholder="Search User ID (e.g. VS-1024, VS-5582)..." 
-          class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 outline-none focus:border-pink-500/80 transition-all shadow-inner"
-        />
+    <!-- TAB 1: FEED -->
+    <div id="tab-feed" class="app-tab flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+      <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-500/30">
+        <h2 class="text-base font-bold text-pink-300">🔥 Welcome to VibeSpace</h2>
+        <p class="text-xs text-slate-300 mt-1">Connect, chat, and stream live with hosts across India!</p>
       </div>
-      <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all shadow-md flex items-center gap-1.5">
-        <span>Search</span>
-      </button>
-    </form>
-
-    <!-- Notification Toast Alert -->
-    <div id="toastAlert" class="hidden p-3 bg-pink-500/20 border border-pink-500/40 text-pink-200 rounded-xl text-xs text-center font-bold animate-pulse shadow-lg">
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-md">
+        <div class="flex items-center space-x-3 mb-3">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-10 h-10 rounded-full object-cover border border-pink-500" />
+          <div>
+            <h4 class="font-bold text-sm">Aanya Roy <span class="text-[10px] text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded-full">VIP Host</span></h4>
+            <span class="text-[10px] text-slate-400">Just now · Live Audio Booth</span>
+          </div>
+        </div>
+        <p class="text-xs text-slate-200 mb-3">Hosting a late-night acoustic session! Drop in to listen or send gifts. 🎤✨</p>
+        <button onclick="switchTab('chats')" class="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-bold text-xs shadow-md">Join Live Chat</button>
+      </div>
     </div>
 
-    <!-- ================= TAB 1: FEED ================= -->
-    <div id="tab-feed" class="space-y-4">
-      
-      <!-- Live Audio Rooms Bar -->
-      <div class="p-3.5 rounded-2xl bg-purple-950/40 border border-purple-500/20 backdrop-blur-md space-y-2">
-        <div class="flex items-center justify-between text-xs font-bold px-1">
-          <span class="text-slate-300 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live VIP Hosts Online
-          </span>
-          <span class="text-pink-400 text-[10px] cursor-pointer hover:underline" onclick="showToast('Tap any host to start instant 1-on-1 audio call!')">View All</span>
+    <!-- TAB 2: MASK ROOM -->
+    <div id="tab-mask" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+      <h3 class="text-base font-bold text-purple-400">🎭 Anonymous Mask Rooms</h3>
+      <p class="text-xs text-slate-400">Chat and voice-match completely anonymously behind a secret persona.</p>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-3">
+        <div class="w-16 h-16 bg-purple-950 rounded-full flex items-center justify-center mx-auto text-2xl border border-purple-500">🦊</div>
+        <h4 class="font-bold text-sm">Secret Fox Room</h4>
+        <p class="text-xs text-slate-400">4 users currently active behind the mask.</p>
+        <button onclick="alert('Mask room session started!')" class="px-4 py-2 bg-purple-600 rounded-xl font-bold text-xs">Enter Mask</button>
+      </div>
+    </div>
+
+    <!-- TAB 3: VIBE MATCH -->
+    <div id="tab-match" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+      <h3 class="text-base font-bold text-indigo-400">⚡ Vibe Match</h3>
+      <p class="text-xs text-slate-400">Find people matching your frequency right now.</p>
+      <div class="p-6 rounded-2xl bg-gradient-to-b from-indigo-950/40 to-slate-900 border border-indigo-500/30 text-center space-y-4">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-24 h-24 rounded-full object-cover mx-auto border-2 border-indigo-500 shadow-lg" />
+        <h4 class="font-bold text-base">Rohan Verma (VS-5582)</h4>
+        <p class="text-xs text-slate-300">Into music production, front-end development & live audio hosting.</p>
+        <button onclick="switchTab('chats'); openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200');" class="px-6 py-2.5 bg-indigo-600 rounded-xl font-bold text-xs shadow-md">Say Hello</button>
+      </div>
+    </div>
+
+    <!-- TAB 4: RADIO -->
+    <div id="tab-radio" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+      <h3 class="text-base font-bold text-amber-400">📻 Vibe Radio</h3>
+      <p class="text-xs text-slate-400">Non-stop curated audio streams and voice FX tracks.</p>
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center space-x-4">
+        <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-lg">♫</div>
+        <div class="flex-1">
+          <h4 class="font-bold text-sm">Lo-Fi Chill & Night Vibes</h4>
+          <p class="text-xs text-slate-400">Live stream broadcasting</p>
         </div>
-        <div class="flex space-x-3 overflow-x-auto no-scrollbar py-1">
-          <div onclick="startVIPCall('Aanya Roy', 20, 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400')" class="flex-shrink-0 text-center cursor-pointer group">
-            <div class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 group-hover:scale-105 transition-transform">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" class="w-full h-full rounded-full object-cover" />
-              <span class="absolute bottom-0 right-0 bg-emerald-500 w-3.5 h-3.5 rounded-full border-2 border-slate-950"></span>
-            </div>
-            <span class="text-[10px] block mt-1 font-bold text-slate-200 line-clamp-1">Aanya R.</span>
-            <span class="text-[9px] block text-amber-300 font-semibold">20 🪙/m</span>
-          </div>
+      </div>
+    </div>
 
-          <div onclick="startVIPCall('Priya Sharma', 25, 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400')" class="flex-shrink-0 text-center cursor-pointer group">
-            <div class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 group-hover:scale-105 transition-transform">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" class="w-full h-full rounded-full object-cover" />
-              <span class="absolute bottom-0 right-0 bg-emerald-500 w-3.5 h-3.5 rounded-full border-2 border-slate-950"></span>
-            </div>
-            <span class="text-[10px] block mt-1 font-bold text-slate-200 line-clamp-1">Priya S.</span>
-            <span class="text-[9px] block text-amber-300 font-semibold">25 🪙/m</span>
-          </div>
+    <!-- TAB 5: CHATS (Live Google Sheet Integration) -->
+    <div id="tab-chats" class="app-tab hidden flex-1 flex flex-col overflow-hidden relative">
+      
+      <!-- Chat List View -->
+      <div id="chatListView" class="flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+        <div class="pb-2 border-b border-slate-800">
+          <h3 class="text-base font-bold text-pink-400">💬 Messages (Live Google Sheet)</h3>
+          <p class="text-[11px] text-slate-400">Tap a contact to open live chat</p>
+        </div>
 
-          <div onclick="openOtherUserProfile('VS-5582')" class="flex-shrink-0 text-center cursor-pointer group">
-            <div class="relative w-14 h-14 rounded-full p-0.5 bg-slate-800 border border-slate-700 group-hover:scale-105 transition-transform">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400" class="w-full h-full rounded-full object-cover" />
-              <span class="absolute bottom-0 right-0 bg-amber-500 w-3.5 h-3.5 rounded-full border-2 border-slate-950"></span>
-            </div>
-            <span class="text-[10px] block mt-1 font-bold text-slate-200 line-clamp-1">Rohan V.</span>
-            <span class="text-[9px] block text-slate-400">15 🪙/m</span>
+        <!-- Contact 1 -->
+        <div onclick="openDirectChat('Aanya Roy', '#VS-1024', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-pink-500 transition-all shadow-md">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-11 h-11 rounded-full object-cover border border-pink-500" />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-sm truncate">Aanya Roy</h4>
+            <p class="text-xs text-slate-400 truncate">Tap to open live chat session</p>
           </div>
+          <span class="text-[10px] text-emerald-400 font-bold shrink-0">● Online</span>
+        </div>
+
+        <!-- Contact 2 -->
+        <div onclick="openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-indigo-500 transition-all shadow-md">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-11 h-11 rounded-full object-cover border border-indigo-500" />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-bold text-sm truncate">Rohan Verma</h4>
+            <p class="text-xs text-slate-400 truncate">Testing out voice FX track</p>
+          </div>
+          <span class="text-[10px] text-slate-500 shrink-0">Online</span>
         </div>
       </div>
 
-      <!-- Create Post Card with Music Selector -->
-      <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-3 shadow-xl">
-        <div class="flex items-center space-x-3">
-          <img id="userAvatarSmall" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" class="w-10 h-10 rounded-full object-cover border border-pink-500" />
-          <input 
-            id="postTextInput"
-            type="text" 
-            placeholder="Share thoughts, audio voice notes or music status..." 
-            class="w-full bg-slate-950/80 border border-slate-800 rounded-full px-4 py-2.5 text-xs outline-none focus:border-pink-500 transition-all text-white placeholder-slate-500"
-          />
-        </div>
-
-        <!-- Background Music Selector -->
-        <div class="flex items-center space-x-2 text-xs">
-          <span class="text-slate-400 font-bold text-[11px]"><i class="fa-solid fa-music text-purple-400 mr-1"></i> BG Track:</span>
-          <select id="bgMusicSelector" class="bg-slate-950 border border-slate-800 rounded-lg px-2 py-1 text-[11px] text-pink-300 outline-none focus:border-pink-500">
-            <option value="None">None (Speech Only)</option>
-            <option value="Lo-Fi Chill Beats 🎧">Lo-Fi Chill Beats 🎧</option>
-            <option value="Acoustic Guitar Melodies 🎸">Acoustic Guitar Melodies 🎸</option>
-            <option value="Synthwave Night Vibe 🌌">Synthwave Night Vibe 🌌</option>
-          </select>
-        </div>
-
-        <!-- Attached Image Preview Container -->
-        <div id="attachedImgPreviewContainer" class="hidden relative rounded-xl overflow-hidden border border-slate-700">
-          <img id="attachedImgPreview" src="" class="w-full max-h-60 object-cover" />
-          <button onclick="removeAttachedImage()" class="absolute top-2 right-2 bg-black/80 hover:bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold text-xs transition-colors">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-
-        <input type="file" id="postFileInput" onchange="handlePostImageSelect(event)" accept="image/*" class="hidden" />
-
-        <div class="flex justify-between items-center pt-2 border-t border-slate-800/80 text-xs font-bold">
+      <!-- Direct Chat Conversation View -->
+      <div id="chatConversationView" class="hidden absolute inset-0 bg-slate-950 flex flex-col z-20">
+        <!-- Sub Header -->
+        <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-800 shrink-0">
           <div class="flex items-center space-x-3">
-            <button onclick="document.getElementById('postFileInput').click()" class="flex items-center space-x-1.5 text-emerald-400 hover:text-emerald-300 transition-colors">
-              <i class="fa-solid fa-image text-sm"></i>
-              <span>Photo</span>
-            </button>
-            <button onclick="toggleVoiceRecorderModal()" class="flex items-center space-x-1.5 text-purple-400 hover:text-purple-300 transition-colors">
-              <i class="fa-solid fa-microphone text-sm"></i>
-              <span>Voice Note</span>
-            </button>
+            <button onclick="closeDirectChat()" class="text-xs bg-slate-800 text-pink-400 px-3 py-1.5 rounded-full font-bold">← Back</button>
+            <img id="activeChatAvatar" src="" class="w-8 h-8 rounded-full object-cover border border-pink-500" />
+            <span id="activeChatUserName" class="text-xs font-bold truncate text-white"></span>
           </div>
-          <button onclick="createNewPost()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-5 py-1.5 rounded-full font-extrabold shadow-lg hover:opacity-90 active:scale-95 transition-all">
-            Post
+        </div>
+        <!-- Message History -->
+        <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs no-scrollbar">
+          <div class="text-center text-slate-500 py-4">Loading live messages...</div>
+        </div>
+        <!-- Input Bar -->
+        <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2 shrink-0">
+          <input 
+            id="chatMessageInput"
+            type="text" 
+            placeholder="Type a message..." 
+            class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-pink-500"
+            onkeydown="if(event.key==='Enter') sendChatMessage()"
+          />
+          <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md">
+            Send
           </button>
         </div>
       </div>
 
-      <!-- Feed Container -->
-      <div id="postsContainer" class="space-y-4">
-        <!-- Dynamic Feed Posts -->
-      </div>
     </div>
 
-    <!-- ================= TAB 2: ANONYMOUS VOICE & MIC PK BATTLE ================= -->
-    <div id="tab-pkbattle" class="hidden space-y-4">
-      
-      <!-- Anonymous Mask Voice Room Banner -->
-      <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 border border-indigo-500/30 shadow-xl space-y-3 text-center">
-        <div class="flex justify-center">
-          <span class="text-4xl p-3 bg-purple-900/40 rounded-full border border-purple-500/40">🎭</span>
+    <!-- TAB 6: PROFILE -->
+    <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
+      <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-3">
+        <div class="w-20 h-20 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full mx-auto flex items-center justify-center text-2xl font-black shadow-lg">R</div>
+        <div>
+          <h3 class="font-bold text-base">Rahul Sharma</h3>
+          <p class="text-xs text-pink-400 font-mono">ID: #VS-1001 · VIP Member</p>
         </div>
-        <h3 class="text-base font-black text-indigo-300">Anonymous Mask Voice Room</h3>
-        <p class="text-xs text-slate-300">Talk freely without revealing your identity or avatar! Uses 3D Mask Voice FX.</p>
-        <button onclick="startAnonymousMaskCall()" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-2.5 rounded-full font-bold text-xs shadow-lg active:scale-95 transition-all">
-          <i class="fa-solid fa-user-ninja mr-1.5"></i> Join Anonymous Mask Room
-        </button>
-      </div>
-
-      <!-- Live Mic PK Battle Lounge -->
-      <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-4 shadow-xl">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <h3 class="text-base font-black text-pink-400 flex items-center gap-2">
-            <i class="fa-solid fa-swords text-amber-400"></i> Live Mic PK Battle Lounge
-          </h3>
-          <span class="text-[10px] bg-rose-500/20 border border-rose-500/40 text-rose-300 px-2 py-0.5 rounded-full font-bold animate-pulse">LIVE</span>
-        </div>
-
-        <!-- PK Battle Arena simulation -->
-        <div class="relative bg-slate-900/90 rounded-2xl p-4 border border-slate-800 text-center space-y-3">
-          
-          <div class="flex justify-around items-center">
-            <!-- Host A -->
-            <div class="text-center space-y-1">
-              <div class="relative w-16 h-16 rounded-full border-2 border-pink-500 mx-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" class="w-full h-full object-cover" />
-              </div>
-              <h4 class="text-xs font-bold text-white">Aanya Roy</h4>
-              <span id="pkVotesHostA" class="text-[11px] font-black text-pink-400">1,450 pts</span>
-            </div>
-
-            <!-- VS Badge & Timer -->
-            <div class="space-y-1">
-              <span class="text-2xl font-black italic bg-gradient-to-r from-pink-500 to-indigo-500 bg-clip-text text-transparent">VS</span>
-              <p id="pkTimerDisplay" class="text-xs font-mono font-bold text-amber-400">01:45</p>
-            </div>
-
-            <!-- Host B -->
-            <div class="text-center space-y-1">
-              <div class="relative w-16 h-16 rounded-full border-2 border-indigo-500 mx-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" class="w-full h-full object-cover" />
-              </div>
-              <h4 class="text-xs font-bold text-white">Priya Sharma</h4>
-              <span id="pkVotesHostB" class="text-[11px] font-black text-indigo-400">1,120 pts</span>
-            </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">Balance</span>
+            <span class="font-bold text-sm text-amber-300">150 Coins</span>
           </div>
-
-          <!-- Progress Bar (Gauge) -->
-          <div class="space-y-1">
-            <div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden flex">
-              <div id="pkBarHostA" class="h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-500" style="width: 56%;"></div>
-              <div id="pkBarHostB" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 transition-all duration-500" style="width: 44%;"></div>
-            </div>
-            <p class="text-[10px] text-slate-400">Send gifts to boost your favorite host in real-time!</p>
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">Status</span>
+            <span class="font-bold text-sm text-emerald-400">Active</span>
           </div>
-
-          <div class="flex justify-center space-x-3 pt-2">
-            <button onclick="giftPKHost('A')" class="bg-pink-500/20 border border-pink-500/40 text-pink-300 px-4 py-1.5 rounded-full font-bold text-xs hover:bg-pink-500/30 active:scale-95 transition-all">
-              🎁 Gift Aanya (10🪙)
-            </button>
-            <button onclick="giftPKHost('B')" class="bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 px-4 py-1.5 rounded-full font-bold text-xs hover:bg-indigo-500/30 active:scale-95 transition-all">
-              🎁 Gift Priya (10🪙)
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= TAB 3: VIBE MATCH / SPEED DATING ================= -->
-    <div id="tab-vibematch" class="hidden space-y-4">
-      <div class="p-5 rounded-2xl bg-gradient-to-br from-pink-950 via-purple-950 to-slate-950 border border-pink-500/30 backdrop-blur-md space-y-4 shadow-2xl text-center">
-        
-        <div class="space-y-1">
-          <span class="text-5xl inline-block animate-bounce">💘</span>
-          <h3 class="text-xl font-black text-pink-400">Vibe Match - Blind Speed Dating</h3>
-          <p class="text-xs text-slate-300">Connect in a 3-minute anonymous voice chat with a random online vibe partner!</p>
-        </div>
-
-        <!-- Gender Filter Preference -->
-        <div class="flex justify-center items-center space-x-2 text-xs">
-          <span class="text-slate-400 font-bold">Matching Preference:</span>
-          <select id="vibeMatchGender" class="bg-slate-950 border border-pink-500/40 rounded-lg px-3 py-1 text-pink-300 font-bold outline-none">
-            <option value="Any">Any Gender 🌈</option>
-            <option value="Female">Female Only 👩</option>
-            <option value="Male">Male Only 👨</option>
-          </select>
-        </div>
-
-        <!-- Match Action Button -->
-        <div class="py-4">
-          <button id="startVibeMatchBtn" onclick="startVibeSpeedMatch()" class="w-full max-w-xs bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:opacity-90 text-white py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-pink-500/30 active:scale-95 transition-all">
-            ⚡ Start 3-Min Vibe Match Now
-          </button>
-        </div>
-
-        <!-- Active Match Display Container -->
-        <div id="vibeMatchOverlay" class="hidden bg-slate-950/90 border border-pink-500/50 p-4 rounded-2xl space-y-3">
-          <div class="flex justify-center space-x-2 text-emerald-400 font-bold text-xs animate-pulse">
-            <i class="fa-solid fa-circle text-[8px] self-center"></i>
-            <span>Connected! Speed Dating Live</span>
-          </div>
-          
-          <div class="flex justify-around items-center py-2">
-            <div class="text-center">
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200" class="w-14 h-14 rounded-full border-2 border-pink-500 object-cover" />
-              <span class="text-[10px] font-bold mt-1 block">You</span>
-            </div>
-            <div class="text-pink-400 font-mono text-2xl font-black" id="matchCountdown">03:00</div>
-            <div class="text-center">
-              <img id="matchedPartnerAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-14 h-14 rounded-full border-2 border-purple-500 object-cover" />
-              <span id="matchedPartnerName" class="text-[10px] font-bold mt-1 block">Anonymous Vibe</span>
-            </div>
-          </div>
-
-          <div class="flex justify-center space-x-3 pt-2">
-            <button onclick="endVibeMatch()" class="bg-rose-600 text-white px-4 py-1.5 rounded-full font-bold text-xs">
-              End Match
-            </button>
-            <button onclick="sendMatchFriendReq()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-1.5 rounded-full font-bold text-xs">
-              ❤️ Add Friend
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ================= TAB 4: 24/7 RADIO STATION & PODCAST ================= -->
-    <div id="tab-radio" class="hidden space-y-4">
-      <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-4 shadow-xl">
-        <h3 class="text-lg font-black text-pink-400 border-b border-slate-800 pb-2 flex items-center justify-between">
-          <span><i class="fa-solid fa-radio text-pink-500 mr-2"></i>24/7 Radio Station & Podcast Lounge</span>
-          <span class="text-xs font-normal text-emerald-400 font-bold">● Streaming Live</span>
-        </h3>
-
-        <!-- Radio Player Box -->
-        <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 space-y-4 text-center">
-          <div class="relative w-32 h-32 mx-auto rounded-2xl overflow-hidden border-2 border-pink-500 shadow-lg">
-            <img id="radioCover" src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <i class="fa-solid fa-compact-disc text-4xl text-pink-400 animate-spin" style="animation-duration: 6s;"></i>
-            </div>
-          </div>
-
-          <div>
-            <h4 id="radioShowTitle" class="text-base font-extrabold text-white">Late Night Lo-Fi & Voice Talks</h4>
-            <p id="radioHostName" class="text-xs text-pink-300 font-semibold">Hosted by DJ Aanya Roy</p>
-          </div>
-
-          <!-- Equalizer -->
-          <div class="flex items-end justify-center space-x-1.5 h-8">
-            <div class="w-1.5 bg-pink-500 rounded-full eq-bar"></div>
-            <div class="w-1.5 bg-purple-500 rounded-full eq-bar"></div>
-            <div class="w-1.5 bg-indigo-500 rounded-full eq-bar"></div>
-            <div class="w-1.5 bg-emerald-400 rounded-full eq-bar"></div>
-            <div class="w-1.5 bg-pink-400 rounded-full eq-bar"></div>
-          </div>
-
-          <div class="flex justify-center items-center space-x-4">
-            <button onclick="toggleRadioPlay()" id="radioPlayBtn" class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-lg active:scale-95 transition-all">
-              <i class="fa-solid fa-pause"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ================= TAB 5: LEADERBOARD ================= -->
-    <div id="tab-leaderboard" class="hidden space-y-4">
-      <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-4 shadow-xl">
-        <h3 class="text-lg font-black text-amber-400 border-b border-slate-800 pb-2 flex items-center gap-2">
-          <i class="fa-solid fa-trophy text-amber-400"></i> Top Creator & Giver Leaderboard
-        </h3>
-
-        <!-- Leaderboard Ranks -->
-        <div class="space-y-2.5 text-xs font-bold">
-          
-          <!-- Rank 1 -->
-          <div class="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-slate-900 to-slate-950 border border-amber-400/40">
-            <div class="flex items-center space-x-3">
-              <span class="text-lg">🥇</span>
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-10 h-10 rounded-full object-cover border border-amber-400" />
-              <div>
-                <h4 class="font-extrabold text-white text-sm">Aanya Roy</h4>
-                <p class="text-[10px] text-amber-300">Top Gainer</p>
-              </div>
-            </div>
-            <span class="text-amber-300 font-mono font-black text-sm">💎 12,450</span>
-          </div>
-
-          <!-- Rank 2 -->
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-            <div class="flex items-center space-x-3">
-              <span class="text-lg">🥈</span>
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-10 h-10 rounded-full object-cover border border-slate-400" />
-              <div>
-                <h4 class="font-extrabold text-white text-sm">Priya Sharma</h4>
-                <p class="text-[10px] text-slate-400">Voice Host</p>
-              </div>
-            </div>
-            <span class="text-slate-300 font-mono font-black text-sm">💎 8,920</span>
-          </div>
-
-          <!-- Rank 3 -->
-          <div class="flex items-center justify-between p-3 rounded-xl bg-slate-900/80 border border-slate-800">
-            <div class="flex items-center space-x-3">
-              <span class="text-lg">🥉</span>
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-10 h-10 rounded-full object-cover border border-amber-700" />
-              <div>
-                <h4 class="font-extrabold text-white text-sm">Rohan Verma</h4>
-                <p class="text-[10px] text-slate-400">Audio Artist</p>
-              </div>
-            </div>
-            <span class="text-amber-600 font-mono font-black text-sm">💎 5,140</span>
-          </div>
-
-        </div>
-      </div>
-    </div>
-<
-  <!-- ================= LIVE GOOGLE SHEETS CHAT SECTION ================= -->
-<div id="tab-chats" class="flex-1 flex flex-col h-[calc(100vh-100px)] bg-slate-950 text-white p-2">
-  
-  <!-- 1. CHAT LIST VIEW (Inbox) -->
-  <div id="chatListView" class="flex-1 flex flex-col space-y-3 overflow-y-auto no-scrollbar">
-    <div class="p-3 border-b border-slate-800">
-      <h3 class="text-lg font-bold text-pink-400">💬 Messages (Live)</h3>
-      <p class="text-xs text-slate-400">Tap a chat to start live messaging</p>
-    </div>
-
-    <!-- Contact 1 -->
-    <div onclick="openDirectChat('Aanya Roy', '#VS-1024', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200')" class="flex items-center space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-pink-500 transition-all">
-      <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-12 h-12 rounded-full object-cover border border-pink-500" />
-      <div class="flex-1">
-        <h4 class="font-bold text-sm">Aanya Roy</h4>
-        <p class="text-xs text-slate-400">Hey Rahul! Let's chat live via Google Sheet.</p>
-      </div>
-      <span class="text-[10px] text-slate-500">Online</span>
-    </div>
-  </div>
-
-  <!-- 2. DIRECT CHAT CONVERSATION VIEW -->
-  <div id="chatConversationView" class="hidden absolute inset-0 bg-slate-950 flex flex-col z-20">
-    
-    <!-- Chat Header -->
-    <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-800 shrink-0">
-      <div class="flex items-center space-x-3">
-        <button onclick="closeDirectChat()" class="text-xs bg-slate-800 text-pink-400 px-3 py-1.5 rounded-full font-bold">← Back</button>
-        <img id="activeChatAvatar" src="" class="w-9 h-9 rounded-full object-cover border border-pink-500" />
-        <span id="activeChatUserName" class="text-sm font-bold truncate"></span>
-      </div>
-    </div>
-
-    <!-- Message History Box -->
-    <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs no-scrollbar">
-      <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 max-w-[80%] mr-auto shadow-md">
-        <p>Loading live messages from Google Sheet...</p>
-      </div>
-    </div>
-
-    <!-- Input & Send Bar -->
-    <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2 shrink-0">
-      <input 
-        id="chatMessageInput"
-        type="text" 
-        placeholder="Type a message..." 
-        class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-pink-500"
-        onkeydown="if(event.key==='Enter') sendChatMessage()"
-      />
-      <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all shadow-md">
-        Send
-      </button>
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ================= GOOGLE SHEETS SYNC LOGIC ================= -->
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
-
-  function openDirectChat(userName, userId, avatar) {
-    document.getElementById('chatListView').classList.add('hidden');
-    document.getElementById('chatConversationView').classList.remove('hidden');
-    document.getElementById('activeChatUserName').innerText = userName + ' (' + userId + ')';
-    if(avatar) document.getElementById('activeChatAvatar').src = avatar;
-    fetchMessages();
-  }
-
-  function closeDirectChat() {
-    document.getElementById('chatConversationView').classList.add('hidden');
-    document.getElementById('chatListView').classList.remove('hidden');
-  }
-
-  // Google Sheet se messages fetch karne ka function
-  function fetchMessages() {
-    fetch(SCRIPT_URL)
-      .then(res => res.json())
-      .then(data => {
-        const history = document.getElementById('messageHistory');
-        history.innerHTML = '';
-        if (data.length === 0) {
-          history.innerHTML = `<div class="text-center text-slate-500 py-4">No messages yet. Say hello!</div>`;
-          return;
-        }
-        data.forEach(item => {
-          const isMe = item.sender === "Rahul"; // Aapka naam
-          history.innerHTML += `
-            <div class="p-3 rounded-2xl ${isMe ? 'bg-gradient-to-r from-pink-600/70 to-purple-600/70 border border-pink-500/30 max-w-[80%] ml-auto text-right' : 'bg-slate-900 border border-slate-800 max-w-[80%] mr-auto'} shadow-md">
-              <span class="text-[9px] text-pink-300 block font-bold mb-0.5">${item.sender}</span>
-              <p>${item.message}</p>
-              <span class="text-[8px] text-slate-400 block text-right mt-1">${item.timestamp}</span>
-            </div>
-          `;
-        });
-        history.scrollTop = history.scrollHeight;
-      })
-      .catch(err => console.error("Error fetching messages:", err));
-  }
-
-  // Google Sheet par naya message bhejne ka function
-  function sendChatMessage() {
-    const input = document.getElementById('chatMessageInput');
-    const text = input.value.trim();
-    if (!text) return;
-
-    const payload = {
-      sender: "Rahul", // Aapka naam
-      message: text
-    };
-
-    input.value = '';
-
-    fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(() => {
-      setTimeout(fetchMessages, 1000); // 1 second baad messages refresh karein
-    }).catch(err => console.error("Error sending message:", err));
-  }
-</script>
-
-
-    <!-- ================= TAB 7: SAVED BOOKMARKS ================= -->
-    <div id="tab-saved" class="hidden space-y-4">
-      <h3 class="text-lg font-black text-pink-400 px-1 flex items-center gap-2">
-        <i class="fa-solid fa-bookmark"></i> Saved Bookmarks
-      </h3>
-      <div id="savedPostsContainer" class="space-y-4">
-        <!-- Rendered by JS -->
-      </div>
-    </div>
-
-    <!-- ================= TAB 8: MY PROFILE ================= -->
-    <div id="tab-profile" class="hidden space-y-4">
-      <div class="p-5 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-5 shadow-2xl">
-        
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-          <div>
-            <h3 class="text-lg font-black text-pink-400">👤 Profile Dashboard</h3>
-            <p class="text-[10px] text-slate-400">Personal Creator Account Statistics</p>
-          </div>
-          <button id="editProfileBtn" onclick="toggleEditProfile()" class="text-xs bg-pink-500/20 border border-pink-500/40 text-pink-300 px-3.5 py-1.5 rounded-full font-bold hover:bg-pink-500/30 transition-all shadow-md">
-            <i class="fa-solid fa-pen text-[10px] mr-1"></i> Edit Profile
-          </button>
-        </div>
-
-        <!-- Avatar, Name & User ID Badge -->
-        <div class="flex flex-col items-center space-y-2 text-center">
-          <div class="relative">
-            <img id="profileImageDisplay" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400" class="w-28 h-28 rounded-full object-cover border-4 border-pink-500/80 shadow-[0_0_25px_rgba(236,72,153,0.35)]" />
-            <button id="avatarUploadBtn" onclick="document.getElementById('profileImgFileInput').click()" class="hidden absolute bottom-0 right-0 bg-gradient-to-r from-pink-500 to-purple-600 text-white p-2 rounded-full shadow-lg text-xs hover:scale-110 transition-transform">
-              <i class="fa-solid fa-camera"></i>
-            </button>
-          </div>
-          <input type="file" id="profileImgFileInput" onchange="handleProfileImageSelect(event)" accept="image/*" class="hidden" />
-
-          <h2 id="profileNameDisplay" class="text-xl font-extrabold text-white">Rahul Sharma</h2>
-          
-          <div class="flex items-center space-x-2">
-            <span id="profileUserIdDisplay" class="text-xs font-mono bg-pink-500/20 border border-pink-500/40 text-pink-300 px-3 py-0.5 rounded-full font-black tracking-wide">
-              ID: VS-9842
-            </span>
-            <span id="profileDiamondsDisplay" class="text-xs bg-amber-500/20 border border-amber-400/40 text-amber-300 px-2.5 py-0.5 rounded-full font-bold">
-              💎 96 Diamonds
-            </span>
-          </div>
-
-          <!-- Custom Bio / Status Card -->
-          <div class="w-full mt-2">
-            <div id="bioStatusView" class="text-xs italic opacity-90 bg-slate-950/60 px-4 py-2.5 rounded-xl border border-slate-800 max-w-md mx-auto text-pink-100">
-              "<span id="profileBioText">🚀 Hustling on VibeSpace | Voice Artist 🎧</span>"
-            </div>
-            <div id="bioStatusEdit" class="hidden">
-              <label class="opacity-70 text-[10px] block mb-1 text-left font-bold text-slate-300">Custom Status / Bio:</label>
-              <input id="profileBioInput" type="text" class="w-full bg-slate-950 border border-pink-500/50 rounded-xl px-3 py-2 text-xs text-white outline-none font-medium" />
-            </div>
-          </div>
-        </div>
-
-        <!-- 4-COLUMN STATS GRID -->
-        <div class="grid grid-cols-4 gap-2 w-full text-center py-3 bg-slate-950/70 border border-slate-800 rounded-xl shadow-inner">
-          <div>
-            <span id="statFollowers" class="block text-sm font-black text-pink-400">342</span>
-            <span class="text-[10px] opacity-70">Followers</span>
-          </div>
-          <div>
-            <span id="statFollowing" class="block text-sm font-black text-indigo-400">120</span>
-            <span class="text-[10px] opacity-70">Following</span>
-          </div>
-          <div>
-            <span id="statVisits" class="block text-sm font-black text-emerald-400">1250</span>
-            <span class="text-[10px] opacity-70">Visits</span>
-          </div>
-          <div>
-            <span id="statGifts" class="block text-sm font-black text-amber-400">🎁 48</span>
-            <span class="text-[10px] opacity-70">Gifts Recv.</span>
-          </div>
-        </div>
-
-        <!-- Personal Info Form -->
-        <div class="space-y-3 text-xs font-bold bg-slate-950/40 p-4 rounded-xl border border-slate-800/80">
-          <h4 class="text-xs font-black text-purple-300 border-b border-slate-800 pb-1.5 mb-2">📋 Account Details</h4>
-          
-          <div>
-            <label class="opacity-70 block mb-1">Full Name:</label>
-            <input id="profileNameInput" type="text" disabled class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none disabled:opacity-70 focus:border-pink-500" />
-          </div>
-
-          <div>
-            <label class="opacity-70 block mb-1">Date of Birth (DOB):</label>
-            <input id="profileDobInput" type="date" disabled class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none disabled:opacity-70 focus:border-pink-500" />
-          </div>
-
-          <div>
-            <label class="opacity-70 block mb-1">Gender:</label>
-            <select id="profileGenderInput" disabled class="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2 text-white outline-none disabled:opacity-70 focus:border-pink-500">
-              <option value="Male" class="bg-slate-900">Male</option>
-              <option value="Female" class="bg-slate-900">Female</option>
-              <option value="Other" class="bg-slate-900">Other</option>
-            </select>
-          </div>
-        </div>
-
-        <button id="saveProfileBtn" onclick="saveProfileChanges()" class="hidden w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-black text-xs shadow-lg hover:opacity-90 active:scale-95 transition-all">
-          💾 Save Profile Changes
-        </button>
-      </div>
-    </div>
-
-    <!-- OTHER USER PROFILE VIEW -->
-    <div id="otherUserProfileView" class="hidden space-y-4">
-      <div class="p-5 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-5 shadow-2xl">
-        <div class="flex justify-between items-center">
-          <button onclick="closeOtherUserProfile()" class="text-xs bg-slate-800 text-pink-300 border border-pink-500/30 px-3 py-1.5 rounded-full font-bold hover:bg-slate-700 transition-all flex items-center gap-1">
-            <i class="fa-solid fa-arrow-left"></i> Back
-          </button>
-          
-          <button id="followToggleBtn" onclick="toggleFollowUser()" class="px-4 py-1.5 rounded-full text-xs font-black shadow-lg transition-all active:scale-95">
-            <!-- Rendered by JS -->
-          </button>
-        </div>
-
-        <div class="flex flex-col items-center space-y-2 text-center">
-          <img id="otherAvatar" src="" class="w-28 h-28 rounded-full object-cover border-4 border-pink-500/80 shadow-[0_0_25px_rgba(236,72,153,0.35)]" />
-          <h2 id="otherName" class="text-xl font-extrabold text-white"></h2>
-          <span id="otherUserId" class="text-xs font-mono bg-pink-500/20 border border-pink-500/40 text-pink-300 px-3 py-0.5 rounded-full font-black"></span>
-          <p id="otherBio" class="text-xs italic opacity-90 bg-slate-950/60 px-4 py-2.5 rounded-xl border border-slate-800 max-w-sm"></p>
-        </div>
-
-        <div class="grid grid-cols-4 gap-2 w-full text-center py-3 bg-slate-950/70 border border-slate-800 rounded-xl">
-          <div>
-            <span id="otherFollowers" class="block text-sm font-black text-pink-400"></span>
-            <span class="text-[10px] opacity-70">Followers</span>
-          </div>
-          <div>
-            <span id="otherFollowing" class="block text-sm font-black text-indigo-400"></span>
-            <span class="text-[10px] opacity-70">Following</span>
-          </div>
-          <div>
-            <span id="otherVisits" class="block text-sm font-black text-emerald-400"></span>
-            <span class="text-[10px] opacity-70">Visits</span>
-          </div>
-          <div>
-            <span id="otherGifts" class="block text-sm font-black text-amber-400"></span>
-            <span class="text-[10px] opacity-70">Gifts</span>
-          </div>
-        </div>
-
-        <div id="otherUserActions" class="flex space-x-3">
-          <!-- Dynamically populated -->
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- ================= 1-ON-1 VIP CALL OVERLAY ================= -->
-  <div id="callOverlay" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-2xl flex flex-col items-center justify-between p-6 text-white">
-    <div class="text-center space-y-2 mt-6">
-      <span id="callRateBadge" class="bg-pink-500/20 text-pink-300 border border-pink-500/40 text-xs px-3.5 py-1 rounded-full font-bold">
-        VIP Private Booth (20 Coins/min)
-      </span>
-      <h2 id="callTargetName" class="text-3xl font-black mt-2">Aanya Roy</h2>
-      <p id="callTimerDisplay" class="text-emerald-400 font-mono text-2xl font-bold">00:00</p>
-    </div>
-
-    <!-- Call Avatar with Animated Equalizer Waveform -->
-    <div class="flex flex-col items-center space-y-4">
-      <div class="relative w-44 h-44 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 p-1 animate-pulse flex items-center justify-center shadow-[0_0_50px_rgba(236,72,153,0.4)]">
-        <img id="callTargetAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400" class="w-full h-full rounded-full object-cover" />
-      </div>
-
-      <!-- Animated Voice Visualizer Bars -->
-      <div class="flex items-end justify-center space-x-1.5 h-10 w-48 pt-2">
-        <div class="w-2 bg-pink-500 rounded-full eq-bar"></div>
-        <div class="w-2 bg-purple-500 rounded-full eq-bar"></div>
-        <div class="w-2 bg-indigo-500 rounded-full eq-bar"></div>
-        <div class="w-2 bg-emerald-400 rounded-full eq-bar"></div>
-        <div class="w-2 bg-pink-400 rounded-full eq-bar"></div>
-      </div>
-    </div>
-
-    <div class="flex items-center space-x-6 mb-10">
-      <button id="muteBtn" onclick="toggleMuteCall()" class="w-14 h-14 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xl active:scale-95 transition-all text-slate-200">
-        <i class="fa-solid fa-microphone"></i>
-      </button>
-      <button onclick="endVIPCall()" class="w-16 h-16 rounded-full bg-rose-600 hover:bg-rose-700 border border-rose-400 flex items-center justify-center font-bold text-2xl shadow-2xl active:scale-95 transition-all text-white">
-        <i class="fa-solid fa-phone-slash"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- Voice Note Recorder Modal -->
-  <div id="voiceRecorderModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-purple-950 border border-pink-500/30 rounded-2xl p-5 shadow-2xl text-center space-y-4">
-      <h3 class="text-lg font-black text-pink-400">🎙️ Record Voice Note</h3>
-      <p class="text-xs text-slate-300">Simulate audio voice recording for your post</p>
-      
-      <div class="py-4 flex justify-center items-center space-x-2">
-        <span class="w-3 h-3 bg-rose-500 rounded-full animate-ping"></span>
-        <span id="recordingTimer" class="font-mono text-xl text-rose-400 font-bold">00:05</span>
-      </div>
-
-      <div class="flex space-x-2">
-        <button onclick="toggleVoiceRecorderModal()" class="flex-1 bg-slate-800 text-slate-300 py-2.5 rounded-xl font-bold text-xs">Cancel</button>
-        <button onclick="attachSimulatedAudio()" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-2.5 rounded-xl font-bold text-xs">Attach Audio</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= COIN RECHARGE MODAL ================= -->
-  <div id="rechargeModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-purple-950 border border-pink-500/30 rounded-2xl p-5 shadow-2xl space-y-4">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-        <h3 class="text-lg font-black text-amber-400 flex items-center gap-2">
-          <i class="fa-solid fa-coins"></i> Coin Wallet Top-Up
-        </h3>
-        <button onclick="toggleModal('rechargeModal', false)" class="text-slate-400 font-bold hover:text-white">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="space-y-3 font-bold text-xs">
-        <button onclick="addCoins(100)" class="w-full p-3.5 rounded-xl border border-amber-400/40 bg-amber-400/10 flex justify-between items-center hover:bg-amber-400/20 active:scale-95 transition-all">
-          <span class="flex items-center gap-2 text-amber-300">🪙 100 Coins Package</span>
-          <span class="text-emerald-400 font-black">₹50</span>
-        </button>
-        <button onclick="addCoins(500)" class="w-full p-3.5 rounded-xl border border-amber-400/40 bg-amber-400/10 flex justify-between items-center hover:bg-amber-400/20 active:scale-95 transition-all">
-          <span class="flex items-center gap-2 text-amber-300">🪙 500 Coins Package</span>
-          <span class="text-emerald-400 font-black">₹200</span>
-        </button>
-        <button onclick="addCoins(1200)" class="w-full p-3.5 rounded-xl border border-amber-400/40 bg-amber-400/10 flex justify-between items-center hover:bg-amber-400/20 active:scale-95 transition-all">
-          <span class="flex items-center gap-2 text-amber-300">🔥 1200 VIP Bundle</span>
-          <span class="text-emerald-400 font-black">₹450</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= PROMINENT BOTTOM NAVIGATION BAR ================= -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-purple-500/20 backdrop-blur-2xl px-1 py-2 flex justify-around items-center max-w-xl mx-auto shadow-2xl">
-    
-    <button id="navBtn-feed" onclick="switchTab('feed')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-pink-400 bg-pink-500/15 font-black scale-105">
-      <i class="fa-solid fa-house text-base mb-0.5"></i>
-      <span class="text-[10px]">Feed</span>
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="absolute bottom-0 left-0 right-0 h-16 bg-slate-900/95 border-t border-slate-800 backdrop-blur-md flex items-center justify-around px-2 z-40">
+    <button onclick="switchTab('feed')" class="nav-btn flex flex-col items-center text-pink-500" data-tab="feed">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] font-medium">Feed</span>
     </button>
-
-    <button id="navBtn-pkbattle" onclick="switchTab('pkbattle')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200">
-      <i class="fa-solid fa-masks-theater text-base mb-0.5"></i>
-      <span class="text-[10px]">Mask Room</span>
+    <button onclick="switchTab('mask')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="mask">
+      <span class="text-lg">🎭</span>
+      <span class="text-[10px] font-medium">Mask Room</span>
     </button>
-
-    <button id="navBtn-vibematch" onclick="switchTab('vibematch')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200">
-      <i class="fa-solid fa-heart-pulse text-base mb-0.5"></i>
-      <span class="text-[10px]">Vibe Match</span>
+    <button onclick="switchTab('match')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="match">
+      <span class="text-[10px] font-medium">⚡</span>
+      <span class="text-[10px] font-medium">Vibe Match</span>
     </button>
-
-    <button id="navBtn-radio" onclick="switchTab('radio')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200">
-      <i class="fa-solid fa-radio text-base mb-0.5"></i>
-      <span class="text-[10px]">Radio</span>
+    <button onclick="switchTab('radio')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="radio">
+      <span class="text-lg">📻</span>
+      <span class="text-[10px] font-medium">Radio</span>
     </button>
-
-    <button id="navBtn-chats" onclick="switchTab('chats')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200">
-      <i class="fa-solid fa-comment text-base mb-0.5"></i>
-      <span class="text-[10px]">Chats</span>
+    <button onclick="switchTab('chats')" class="nav-btn flex flex-col items-center text-slate-400 relative" data-tab="chats">
+      <span class="text-lg">💬</span>
+      <span class="text-[10px] font-medium">Chats</span>
     </button>
-
-    <button id="navBtn-profile" onclick="switchTab('profile')" class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200">
-      <i class="fa-solid fa-user text-base mb-0.5"></i>
-      <span class="text-[10px]">Profile</span>
+    <button onclick="switchTab('profile')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="profile">
+      <span class="text-lg">👤</span>
+      <span class="text-[10px] font-medium">Profile</span>
     </button>
-
   </nav>
 
-  <!-- APP JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // State management & LocalStorage persistence
-    let coins = parseInt(localStorage.getItem('vibespace_coins')) || 150;
-    let activeTab = 'feed';
-    let isEditingProfile = false;
-    let currentCallTimer = null;
-    let callSeconds = 0;
-    let callRate = 0;
-    let isCallMuted = false;
-    let tempPostImage = null;
-    let tempAudioAttached = false;
-    let activeViewingUser = null;
-    let activeChatTarget = null;
-    let isRadioPlaying = true;
-    let vibeMatchTimer = null;
-    let vibeMatchSeconds = 180;
-    let pkHostAVotes = 1450;
-    let pkHostBVotes = 1120;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
+    let autoRefreshInterval = null;
 
-    // Default Profile Data
-    let profileData = JSON.parse(localStorage.getItem('vibespace_profile')) || {
-      userId: 'VS-9842',
-      name: 'Rahul Sharma',
-      dob: '1998-05-15',
-      gender: 'Male',
-      bioStatus: '🚀 Hustling on VibeSpace | Voice Artist 🎧',
-      image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400',
-      followersCount: 342,
-      followingCount: 120,
-      profileVisits: 1250,
-      totalGiftsReceived: 48,
-      diamonds: 96
-    };
+    function switchTab(tabId) {
+      document.querySelectorAll('.app-tab').forEach(tab => tab.classList.add('hidden'));
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
 
-    // Registered Users
-    const registeredUsers = [
-      {
-        userId: 'VS-1024',
-        name: 'Aanya Roy',
-        isFemale: true,
-        rate: 20,
-        dob: '2000-08-12',
-        gender: 'Female',
-        bioStatus: '✨ Singing & VIP Audio Calls | Let\'s vibe together! 🎵',
-        image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
-        followersCount: 1280,
-        followingCount: 95,
-        profileVisits: 4520,
-        gifts: 310,
-        isFollowed: false
-      },
-      {
-        userId: 'VS-5582',
-        name: 'Rohan Verma',
-        isFemale: false,
-        rate: 15,
-        dob: '1996-03-22',
-        gender: 'Male',
-        bioStatus: '🎙️ Voiceover Creator & Music Enthusiast',
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-        followersCount: 890,
-        followingCount: 310,
-        profileVisits: 2840,
-        gifts: 140,
-        isFollowed: false
-      }
-    ];
-
-    // Feed Posts Data
-    let posts = JSON.parse(localStorage.getItem('vibespace_posts')) || [
-      {
-        id: 1,
-        author: 'Aanya Roy',
-        userId: 'VS-1024',
-        isFemale: true,
-        rate: 20,
-        time: '2 mins ago',
-        content: '🔥 Ready for 1-on-1 VIP Audio calls! Tap Call Now below to connect directly into my private audio booth.',
-        image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&auto=format&fit=crop&q=60',
-        audio: null,
-        bgTrack: 'Lo-Fi Chill Beats 🎧',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400',
-        likes: 128,
-        giftsCount: 15,
-        isSaved: false
-      },
-      {
-        id: 2,
-        author: 'Rohan Verma',
-        userId: 'VS-5582',
-        isFemale: false,
-        rate: 15,
-        time: '15 mins ago',
-        content: '🎙️ Testing out the new Concert Echo & Studio Reverb Voice Note track! Press play below to listen.',
-        image: null,
-        audio: true,
-        bgTrack: 'Acoustic Guitar Melodies 🎸',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-        likes: 95,
-        giftsCount: 8,
-        isSaved: true
-      }
-    ];
-
-    // Direct Chat History by User
-    let chatHistories = JSON.parse(localStorage.getItem('vibespace_chats')) || {
-      'VS-1024': [
-        { id: 1, sender: 'Aanya Roy', text: 'Hey Rahul! Thanks for checking out my VIP studio booth.', isMe: false, time: '10:30 AM' },
-        { id: 2, sender: 'Rahul Sharma', text: 'Loved your voice track! Sent you a gift 🎁', isMe: true, time: '10:32 AM' }
-      ],
-      'VS-5582': [
-        { id: 1, sender: 'Rohan Verma', text: 'Hey bro, checking out the voice note feature.', isMe: false, time: ' Yesterday' }
-      ]
-    };
-
-    // Initialize application
-    window.onload = function() {
-      saveState();
-      updateProfileUI();
-      renderPosts();
-      renderSavedPosts();
-      renderChatList();
-    };
-
-    function saveState() {
-      localStorage.setItem('vibespace_coins', coins);
-      localStorage.setItem('vibespace_profile', JSON.stringify(profileData));
-      localStorage.setItem('vibespace_posts', JSON.stringify(posts));
-      localStorage.setItem('vibespace_chats', JSON.stringify(chatHistories));
-      document.getElementById('coinBalanceDisplay').innerText = coins;
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById('toastAlert');
-      toast.innerText = message;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3500);
-    }
-
-    // Tab Navigation
-    function switchTab(tabName) {
-      activeTab = tabName;
-      ['feed', 'pkbattle', 'vibematch', 'radio', 'chats', 'saved', 'profile', 'leaderboard'].forEach(t => {
-        const elem = document.getElementById(`tab-${t}`);
-        if (elem) elem.classList.add('hidden');
-        
-        const btn = document.getElementById(`navBtn-${t}`);
-        if (btn) {
-          btn.className = 'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-slate-400 hover:text-slate-200';
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-pink-500');
+        btn.classList.add('text-slate-400');
+        if(btn.getAttribute('data-tab') === tabId) {
+          btn.classList.remove('text-slate-400');
+          btn.classList.add('text-pink-500');
         }
       });
 
-      document.getElementById('otherUserProfileView').classList.add('hidden');
-      const activeElem = document.getElementById(`tab-${tabName}`);
-      if (activeElem) activeElem.classList.remove('hidden');
-      
-      const activeBtn = document.getElementById(`navBtn-${tabName}`);
-      if (activeBtn) {
-        activeBtn.className = 'flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all text-pink-400 bg-pink-500/15 font-black scale-105';
+      if(tabId !== 'chats') {
+        closeDirectChat();
       }
-    }
-
-    // Render Feed Posts
-    function renderPosts() {
-      const container = document.getElementById('postsContainer');
-      container.innerHTML = posts.map(post => `
-        <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-3 shadow-xl">
-          <div class="flex items-center justify-between">
-            <div onclick="openOtherUserProfile('${post.userId}')" class="flex items-center space-x-3 cursor-pointer group">
-              <img src="${post.avatar}" class="w-10 h-10 rounded-full object-cover border-2 border-pink-500/50 group-hover:scale-105 transition-transform" />
-              <div>
-                <h4 class="font-bold text-sm flex items-center gap-1.5 group-hover:text-pink-400 transition-colors">
-                  ${post.author}
-                  <span class="text-[10px] opacity-60 font-mono">#${post.userId}</span>
-                  ${post.isFemale ? `<span class="bg-pink-500/20 border border-pink-500/40 text-pink-300 text-[10px] px-2 py-0.5 rounded-full">👑 ${post.rate} 🪙/m</span>` : ''}
-                </h4>
-                <p class="text-[10px] opacity-60">${post.time} ${post.bgTrack && post.bgTrack !== 'None' ? `• 🎵 ${post.bgTrack}` : ''}</p>
-              </div>
-            </div>
-
-            ${post.isFemale ? `
-              <button onclick="startVIPCall('${post.author}', ${post.rate}, '${post.avatar}')" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white px-3.5 py-1.5 rounded-full font-black text-xs shadow-lg shadow-emerald-500/20 active:scale-95 transition-all flex items-center space-x-1">
-                <i class="fa-solid fa-phone text-[10px]"></i>
-                <span>Call</span>
-              </button>
-            ` : ''}
-          </div>
-
-          <p class="text-sm leading-relaxed text-slate-100">${post.content}</p>
-
-          ${post.audio ? `
-            <div class="p-3 rounded-xl bg-slate-900/90 border border-purple-500/30 flex items-center justify-between">
-              <button onclick="playAudioSim(this)" class="w-9 h-9 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
-                <i class="fa-solid fa-play"></i>
-              </button>
-              <div class="flex-1 mx-3">
-                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
-                  <div class="h-full bg-gradient-to-r from-pink-500 to-purple-500 w-1/3"></div>
-                </div>
-              </div>
-              <span class="text-[10px] font-mono text-slate-400">0:14</span>
-            </div>
-          ` : ''}
-
-          ${post.image ? `
-            <div class="rounded-xl overflow-hidden border border-slate-700/60 shadow-md">
-              <img src="${post.image}" class="w-full max-h-80 object-cover" />
-            </div>
-          ` : ''}
-
-          <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs opacity-90 font-semibold">
-            <button onclick="likePost(${post.id})" class="hover:text-pink-400 transition-colors flex items-center gap-1">
-              <i class="fa-regular fa-thumbs-up"></i> Like (${post.likes})
-            </button>
-            
-            <button onclick="sendGift(${post.id})" class="text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full font-bold hover:bg-amber-500/20 active:scale-95 transition-all flex items-center gap-1">
-              <i class="fa-solid fa-gift"></i> Gift (10🪙) [${post.giftsCount}]
-            </button>
-
-            <button onclick="toggleBookmark(${post.id})" class="${post.isSaved ? 'text-pink-400 font-bold' : 'hover:text-pink-400'} transition-colors flex items-center gap-1">
-              <i class="${post.isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-              ${post.isSaved ? 'Saved' : 'Save'}
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function playAudioSim(btn) {
-      const icon = btn.querySelector('i');
-      if (icon.classList.contains('fa-play')) {
-        icon.className = 'fa-solid fa-pause';
-        showToast('🎙️ Audio Voice Note Playing...');
-        setTimeout(() => { icon.className = 'fa-solid fa-play'; }, 3000);
-      } else {
-        icon.className = 'fa-solid fa-play';
-      }
-    }
-
-    // Post Creation Logic
-    function handlePostImageSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-          tempPostImage = reader.result;
-          document.getElementById('attachedImgPreview').src = tempPostImage;
-          document.getElementById('attachedImgPreviewContainer').classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function removeAttachedImage() {
-      tempPostImage = null;
-      document.getElementById('attachedImgPreviewContainer').classList.add('hidden');
-    }
-
-    function toggleVoiceRecorderModal() {
-      const modal = document.getElementById('voiceRecorderModal');
-      modal.classList.toggle('hidden');
-    }
-
-    function attachSimulatedAudio() {
-      tempAudioAttached = true;
-      toggleVoiceRecorderModal();
-      showToast('🎙️ Voice Note attached to post draft!');
-    }
-
-    function createNewPost() {
-      const text = document.getElementById('postTextInput').value.trim();
-      const bgTrack = document.getElementById('bgMusicSelector').value;
-      if (!text && !tempPostImage && !tempAudioAttached) return;
-
-      const newPost = {
-        id: Date.now(),
-        author: profileData.name,
-        userId: profileData.userId,
-        isFemale: profileData.gender === 'Female',
-        rate: 15,
-        time: 'Just now',
-        content: text || '🎙️ Shared a voice note status on VibeSpace',
-        image: tempPostImage,
-        audio: tempAudioAttached,
-        bgTrack: bgTrack,
-        avatar: profileData.image,
-        likes: 0,
-        giftsCount: 0,
-        isSaved: false
-      };
-
-      posts.unshift(newPost);
-      document.getElementById('postTextInput').value = '';
-      removeAttachedImage();
-      tempAudioAttached = false;
-      saveState();
-      renderPosts();
-      showToast('🎉 Post created successfully!');
-    }
-
-    function likePost(id) {
-      posts = posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p);
-      saveState();
-      renderPosts();
-    }
-
-    function sendGift(id) {
-      if (coins < 10) {
-        toggleModal('rechargeModal', true);
-        return;
-      }
-      coins -= 10;
-      posts = posts.map(p => p.id === id ? { ...p, giftsCount: p.giftsCount + 1 } : p);
-      saveState();
-      renderPosts();
-      showToast('🎁 Gift sent to creator! (10 Coins)');
-    }
-
-    function toggleBookmark(id) {
-      posts = posts.map(p => p.id === id ? { ...p, isSaved: !p.isSaved } : p);
-      saveState();
-      renderPosts();
-      renderSavedPosts();
-    }
-
-    function renderSavedPosts() {
-      const savedContainer = document.getElementById('savedPostsContainer');
-      const savedList = posts.filter(p => p.isSaved);
-
-      if (savedList.length === 0) {
-        savedContainer.innerHTML = `
-          <div class="p-8 rounded-2xl bg-purple-950/40 border border-pink-500/20 text-center opacity-70">
-            <i class="fa-regular fa-bookmark text-3xl text-pink-400 mb-2"></i>
-            <p class="text-sm">No saved posts yet. Bookmark posts from the feed to view them here!</p>
-          </div>
-        `;
-        return;
-      }
-
-      savedContainer.innerHTML = savedList.map(post => `
-        <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-3 shadow-xl">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <img src="${post.avatar}" class="w-10 h-10 rounded-full object-cover border border-pink-500/50" />
-              <div>
-                <h4 class="font-bold text-sm">${post.author}</h4>
-                <p class="text-[10px] opacity-60">ID: #${post.userId} • ${post.time}</p>
-              </div>
-            </div>
-            <button onclick="toggleBookmark(${post.id})" class="text-xs bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full font-bold">
-              Remove
-            </button>
-          </div>
-          <p class="text-sm leading-relaxed">${post.content}</p>
-          ${post.image ? `<img src="${post.image}" class="w-full max-h-60 object-cover rounded-xl border border-slate-700" />` : ''}
-        </div>
-      `).join('');
-    }
-
-    // Anonymous Mask Room & PK Battle
-    function startAnonymousMaskCall() {
-      startVIPCall('Anonymous Mask Host 🎭', 0, 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400');
-      showToast('🎭 Connected to Anonymous Mask Voice Room!');
-    }
-
-    function giftPKHost(host) {
-      if (coins < 10) {
-        toggleModal('rechargeModal', true);
-        return;
-      }
-      coins -= 10;
-      saveState();
-
-      if (host === 'A') pkHostAVotes += 200;
-      else pkHostBVotes += 200;
-
-      const total = pkHostAVotes + pkHostBVotes;
-      const pctA = Math.round((pkHostAVotes / total) * 100);
-      const pctB = 100 - pctA;
-
-      document.getElementById('pkVotesHostA').innerText = `${pkHostAVotes.toLocaleString()} pts`;
-      document.getElementById('pkVotesHostB').innerText = `${pkHostBVotes.toLocaleString()} pts`;
-      document.getElementById('pkBarHostA').style.width = `${pctA}%`;
-      document.getElementById('pkBarHostB').style.width = `${pctB}%`;
-
-      showToast(`🎁 200 Battle points gifted to Host ${host}!`);
-    }
-
-    // Vibe Speed Match
-    function startVibeSpeedMatch() {
-      const overlay = document.getElementById('vibeMatchOverlay');
-      overlay.classList.remove('hidden');
-      vibeMatchSeconds = 180;
-      
-      clearInterval(vibeMatchTimer);
-      vibeMatchTimer = setInterval(() => {
-        vibeMatchSeconds--;
-        const m = Math.floor(vibeMatchSeconds / 60).toString().padStart(2, '0');
-        const s = (vibeMatchSeconds % 60).toString().padStart(2, '0');
-        document.getElementById('matchCountdown').innerText = `${m}:${s}`;
-
-        if (vibeMatchSeconds <= 0) {
-          endVibeMatch();
-        }
-      }, 1000);
-
-      showToast('💘 Blind Speed Dating match started!');
-    }
-
-    function endVibeMatch() {
-      clearInterval(vibeMatchTimer);
-      document.getElementById('vibeMatchOverlay').classList.add('hidden');
-      showToast('Vibe Match session ended.');
-    }
-
-    function sendMatchFriendReq() {
-      showToast('❤️ Friend Request sent to your Vibe Match partner!');
-    }
-
-    // Radio Station
-    function toggleRadioPlay() {
-      isRadioPlaying = !isRadioPlaying;
-      const btn = document.getElementById('radioPlayBtn');
-      btn.innerHTML = isRadioPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play ml-0.5"></i>';
-      showToast(isRadioPlaying ? '📻 24/7 Radio Station Playing' : '📻 Radio Station Paused');
-    }
-
-    // User Search
-    function handleUserSearch(e) {
-      e.preventDefault();
-      const rawInput = document.getElementById('searchInput').value.trim();
-      if (!rawInput) return;
-      const formatted = rawInput.toUpperCase().replace('#', '');
-      
-      if (formatted === profileData.userId || formatted === 'VS-9842') {
-        switchTab('profile');
-        return;
-      }
-
-      const found = registeredUsers.find(u => u.userId === formatted);
-      if (found) {
-        openOtherUserProfile(found.userId);
-      } else {
-        showToast('⚠️ User ID not found! Try searching VS-1024 or VS-5582.');
-      }
-    }
-
-    // Profile Management UI
-    function updateProfileUI() {
-      document.getElementById('userAvatarSmall').src = profileData.image;
-      document.getElementById('profileImageDisplay').src = profileData.image;
-      document.getElementById('profileNameDisplay').innerText = profileData.name;
-      document.getElementById('profileUserIdDisplay').innerText = `ID: ${profileData.userId}`;
-      document.getElementById('profileDiamondsDisplay').innerText = `💎 ${profileData.diamonds} Diamonds`;
-      document.getElementById('profileBioText').innerText = profileData.bioStatus;
-      document.getElementById('profileBioInput').value = profileData.bioStatus;
-
-      document.getElementById('statFollowers').innerText = profileData.followersCount;
-      document.getElementById('statFollowing').innerText = profileData.followingCount;
-      document.getElementById('statVisits').innerText = profileData.profileVisits;
-      document.getElementById('statGifts').innerText = `🎁 ${profileData.totalGiftsReceived}`;
-
-      document.getElementById('profileNameInput').value = profileData.name;
-      document.getElementById('profileDobInput').value = profileData.dob;
-      document.getElementById('profileGenderInput').value = profileData.gender;
-    }
-
-    function toggleEditProfile() {
-      isEditingProfile = !isEditingProfile;
-      const btn = document.getElementById('editProfileBtn');
-      const saveBtn = document.getElementById('saveProfileBtn');
-      const avatarBtn = document.getElementById('avatarUploadBtn');
-
-      if (isEditingProfile) {
-        btn.innerHTML = '<i class="fa-solid fa-xmark"></i> Cancel';
-        saveBtn.classList.remove('hidden');
-        avatarBtn.classList.remove('hidden');
-        document.getElementById('bioStatusView').classList.add('hidden');
-        document.getElementById('bioStatusEdit').classList.remove('hidden');
-        
-        ['profileNameInput', 'profileDobInput', 'profileGenderInput'].forEach(id => {
-          document.getElementById(id).disabled = false;
-        });
-      } else {
-        btn.innerHTML = '<i class="fa-solid fa-pen text-[10px] mr-1"></i> Edit Profile';
-        saveBtn.classList.add('hidden');
-        avatarBtn.classList.add('hidden');
-        document.getElementById('bioStatusView').classList.remove('hidden');
-        document.getElementById('bioStatusEdit').classList.add('hidden');
-
-        ['profileNameInput', 'profileDobInput', 'profileGenderInput'].forEach(id => {
-          document.getElementById(id).disabled = true;
-        });
-      }
-    }
-
-    function handleProfileImageSelect(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = function() {
-          profileData.image = reader.result;
-          document.getElementById('profileImageDisplay').src = reader.result;
-          document.getElementById('userAvatarSmall').src = reader.result;
-          saveState();
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function saveProfileChanges() {
-      profileData.name = document.getElementById('profileNameInput').value;
-      profileData.dob = document.getElementById('profileDobInput').value;
-      profileData.gender = document.getElementById('profileGenderInput').value;
-      profileData.bioStatus = document.getElementById('profileBioInput').value;
-
-      saveState();
-      updateProfileUI();
-      toggleEditProfile();
-      showToast('✅ Profile updated!');
-    }
-
-    // View Other User Profile
-    function openOtherUserProfile(userId) {
-      const user = registeredUsers.find(u => u.userId === userId);
-      if (!user) return;
-
-      activeViewingUser = user;
-
-      ['feed', 'pkbattle', 'vibematch', 'radio', 'chats', 'saved', 'profile'].forEach(t => {
-        const elem = document.getElementById(`tab-${t}`);
-        if (elem) elem.classList.add('hidden');
-      });
-      document.getElementById('otherUserProfileView').classList.remove('hidden');
-
-      document.getElementById('otherAvatar').src = user.image;
-      document.getElementById('otherName').innerText = user.name;
-      document.getElementById('otherUserId').innerText = `ID: #${user.userId}`;
-      document.getElementById('otherBio').innerText = `"${user.bioStatus}"`;
-
-      document.getElementById('otherFollowers').innerText = user.followersCount;
-      document.getElementById('otherFollowing').innerText = user.followingCount;
-      document.getElementById('otherVisits').innerText = user.profileVisits;
-      document.getElementById('otherGifts').innerText = `🎁 ${user.gifts}`;
-
-      updateFollowButtonUI();
-
-      const actionsContainer = document.getElementById('otherUserActions');
-      actionsContainer.innerHTML = `
-        ${user.isFemale ? `
-          <button onclick="startVIPCall('${user.name}', ${user.rate}, '${user.image}')" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-black text-xs shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-solid fa-phone"></i> Call (${user.rate}🪙/min)
-          </button>
-        ` : ''}
-        <button onclick="openDirectChat('${user.name}', '${user.userId}', '${user.image}')" class="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 rounded-xl font-black text-xs shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-solid fa-comment"></i> Direct Message
-        </button>
-      `;
-    }
-
-    function updateFollowButtonUI() {
-      if (!activeViewingUser) return;
-      const btn = document.getElementById('followToggleBtn');
-      if (activeViewingUser.isFollowed) {
-        btn.innerText = '✓ Following';
-        btn.className = 'px-4 py-1.5 rounded-full text-xs font-black shadow-lg transition-all active:scale-95 bg-slate-800 border border-emerald-500/50 text-emerald-400';
-      } else {
-        btn.innerText = '➕ Follow';
-        btn.className = 'px-4 py-1.5 rounded-full text-xs font-black shadow-lg transition-all active:scale-95 bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:opacity-90';
-      }
-    }
-
-    function toggleFollowUser() {
-      if (!activeViewingUser) return;
-
-      activeViewingUser.isFollowed = !activeViewingUser.isFollowed;
-
-      if (activeViewingUser.isFollowed) {
-        activeViewingUser.followersCount += 1;
-        profileData.followingCount += 1;
-      } else {
-        activeViewingUser.followersCount -= 1;
-        profileData.followingCount -= 1;
-      }
-
-      document.getElementById('otherFollowers').innerText = activeViewingUser.followersCount;
-      updateFollowButtonUI();
-      saveState();
-      updateProfileUI();
-    }
-
-    function closeOtherUserProfile() {
-      activeViewingUser = null;
-      switchTab('feed');
-    }
-
-    // VIP Calling Logic
-    function startVIPCall(name, rate, avatarUrl) {
-      if (rate > 0 && coins < rate) {
-        toggleModal('rechargeModal', true);
-        return;
-      }
-
-      callRate = rate;
-      callSeconds = 0;
-      isCallMuted = false;
-      document.getElementById('callTargetName').innerText = name;
-      document.getElementById('callTargetAvatar').src = avatarUrl;
-      document.getElementById('callRateBadge').innerText = rate > 0 ? `VIP Private Booth (${rate} Coins/min)` : 'Free Anonymous Mask Room';
-      document.getElementById('callTimerDisplay').innerText = '00:00';
-      document.getElementById('callOverlay').classList.remove('hidden');
-
-      currentCallTimer = setInterval(() => {
-        callSeconds++;
-        const mins = Math.floor(callSeconds / 60).toString().padStart(2, '0');
-        const secs = (callSeconds % 60).toString().padStart(2, '0');
-        document.getElementById('callTimerDisplay').innerText = `${mins}:${secs}`;
-
-        if (callRate > 0 && callSeconds % 60 === 0) {
-          if (coins < callRate) {
-            showToast('⚠️ Coin balance depleted! Call ended.');
-            endVIPCall();
-          } else {
-            coins -= callRate;
-            saveState();
-          }
-        }
-      }, 1000);
-    }
-
-    function toggleMuteCall() {
-      isCallMuted = !isCallMuted;
-      document.getElementById('muteBtn').innerHTML = isCallMuted ? '<i class="fa-solid fa-microphone-slash text-rose-400"></i>' : '<i class="fa-solid fa-microphone"></i>';
-    }
-
-    function endVIPCall() {
-      clearInterval(currentCallTimer);
-      document.getElementById('callOverlay').classList.add('hidden');
-    }
-
-    // Chat Inbox Logic
-    function renderChatList() {
-      const chatList = document.getElementById('chatListView');
-      chatList.innerHTML = registeredUsers.map(user => {
-        const history = chatHistories[user.userId] || [];
-        const lastMsg = history[history.length - 1]?.text || 'Tap to start chat';
-        return `
-          <div onclick="openDirectChat('${user.name}', '${user.userId}', '${user.image}')" class="flex items-center space-x-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800/80 cursor-pointer hover:border-pink-500/50 transition-all">
-            <img src="${user.image}" class="w-11 h-11 rounded-full object-cover border border-pink-500" />
-            <div class="flex-1">
-              <div class="flex justify-between items-center">
-                <h4 class="font-bold text-sm">${user.name}</h4>
-                <span class="text-[10px] text-pink-400 font-mono font-bold">#${user.userId}</span>
-              </div>
-              <p class="text-[11px] opacity-70 line-clamp-1">${lastMsg}</p>
-            </div>
-          </div>
-        `;
-      }).join('');
     }
 
     function openDirectChat(userName, userId, avatar) {
-      activeChatTarget = userId;
-      switchTab('chats');
       document.getElementById('chatListView').classList.add('hidden');
       document.getElementById('chatConversationView').classList.remove('hidden');
-      document.getElementById('activeChatUserName').innerText = userName;
-      document.getElementById('activeChatUserId').innerText = `#${userId}`;
-
-      renderMessages();
+      document.getElementById('activeChatUserName').innerText = userName + ' (' + userId + ')';
+      if(avatar) document.getElementById('activeChatAvatar').src = avatar;
+      
+      fetchMessages();
+      if(!autoRefreshInterval) {
+        autoRefreshInterval = setInterval(fetchMessages, 3000);
+      }
     }
 
     function closeDirectChat() {
-      activeChatTarget = null;
       document.getElementById('chatConversationView').classList.add('hidden');
       document.getElementById('chatListView').classList.remove('hidden');
-      renderChatList();
+      if(autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+      }
     }
 
-    function renderMessages() {
-      if (!activeChatTarget) return;
-      const historyContainer = document.getElementById('messageHistory');
-      const messages = chatHistories[activeChatTarget] || [];
-
-      historyContainer.innerHTML = messages.map(m => `
-        <div class="p-2.5 rounded-xl max-w-[80%] ${m.isMe ? 'ml-auto bg-gradient-to-r from-pink-600/40 to-purple-600/40 border border-pink-500/30 text-right' : 'mr-auto bg-slate-900 border border-slate-800'}">
-          <div class="flex justify-between items-center gap-2 mb-1">
-            <span class="font-bold opacity-75 text-[10px]">${m.sender}</span>
-            <span class="text-[9px] opacity-50">${m.time}</span>
-          </div>
-          <p>${m.text}</p>
-        </div>
-      `).join('');
-      historyContainer.scrollTop = historyContainer.scrollHeight;
+    function fetchMessages() {
+      fetch(SCRIPT_URL)
+        .then(res => res.json())
+        .then(data => {
+          const history = document.getElementById('messageHistory');
+          if (!data || data.length === 0) {
+            history.innerHTML = `<div class="text-center text-slate-500 py-4">No messages yet. Say hello!</div>`;
+            return;
+          }
+          let html = '';
+          data.forEach(item => {
+            const isMe = item.sender === "Rahul";
+            html += `
+              <div class="p-2.5 rounded-2xl ${isMe ? 'bg-purple-900/60 border border-purple-500/30 max-w-[80%] ml-auto text-right' : 'bg-slate-900 border border-slate-800 max-w-[80%] mr-auto'} shadow-md">
+                <span class="text-[9px] text-pink-400 block font-bold mb-0.5">${item.sender}</span>
+                <p class="text-xs text-slate-100">${item.message}</p>
+                <span class="text-[8px] text-slate-400 block text-right mt-1">${item.timestamp}</span>
+              </div>
+            `;
+          });
+          history.innerHTML = html;
+          history.scrollTop = history.scrollHeight;
+        })
+        .catch(err => console.error("Error fetching messages:", err));
     }
 
     function sendChatMessage() {
       const input = document.getElementById('chatMessageInput');
       const text = input.value.trim();
-      if (!text || !activeChatTarget) return;
+      if (!text) return;
 
-      if (!chatHistories[activeChatTarget]) {
-        chatHistories[activeChatTarget] = [];
-      }
-
-      chatHistories[activeChatTarget].push({
-        id: Date.now(),
-        sender: profileData.name,
-        text: text,
-        isMe: true,
-        time: 'Just now'
-      });
+      const payload = {
+        sender: "Rahul",
+        message: text
+      };
 
       input.value = '';
-      saveState();
-      renderMessages();
 
-      // Simulated auto reply from host
-      setTimeout(() => {
-        if (activeChatTarget) {
-          const host = registeredUsers.find(u => u.userId === activeChatTarget);
-          chatHistories[activeChatTarget].push({
-            id: Date.now(),
-            sender: host ? host.name : 'Host',
-            text: 'Hey! Thanks for messaging. Join my live Audio booth or Vibe match! 🎙️',
-            isMe: false,
-            time: 'Just now'
-          });
-          saveState();
-          renderMessages();
-        }
-      }, 1500);
-    }
-
-    // Recharge Modal
-    function toggleModal(modalId, show) {
-      document.getElementById(modalId).classList.toggle('hidden', !show);
-    }
-
-    function addCoins(amount) {
-      coins += amount;
-      saveState();
-      toggleModal('rechargeModal', false);
-      showToast(`🪙 Successfully added ${amount} coins to your wallet!`);
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        setTimeout(fetchMessages, 500);
+      }).catch(err => console.error("Error sending message:", err));
     }
   </script>
 </body>
 </html>
-```
