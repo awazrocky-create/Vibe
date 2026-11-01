@@ -405,14 +405,15 @@
         </div>
       </div>
     </div>
-<!-- ================= BASIC & CLEAN CHAT / INBOX SECTION ================= -->
+<
+  <!-- ================= LIVE GOOGLE SHEETS CHAT SECTION ================= -->
 <div id="tab-chats" class="flex-1 flex flex-col h-[calc(100vh-100px)] bg-slate-950 text-white p-2">
   
   <!-- 1. CHAT LIST VIEW (Inbox) -->
   <div id="chatListView" class="flex-1 flex flex-col space-y-3 overflow-y-auto no-scrollbar">
     <div class="p-3 border-b border-slate-800">
-      <h3 class="text-lg font-bold text-pink-400">💬 Messages</h3>
-      <p class="text-xs text-slate-400">Tap a chat to start messaging</p>
+      <h3 class="text-lg font-bold text-pink-400">💬 Messages (Live)</h3>
+      <p class="text-xs text-slate-400">Tap a chat to start live messaging</p>
     </div>
 
     <!-- Contact 1 -->
@@ -420,23 +421,13 @@
       <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-12 h-12 rounded-full object-cover border border-pink-500" />
       <div class="flex-1">
         <h4 class="font-bold text-sm">Aanya Roy</h4>
-        <p class="text-xs text-slate-400">Hey Rahul! Thanks for checking out my VIP booth.</p>
+        <p class="text-xs text-slate-400">Hey Rahul! Let's chat live via Google Sheet.</p>
       </div>
-      <span class="text-[10px] text-slate-500">10:32 AM</span>
-    </div>
-
-    <!-- Contact 2 -->
-    <div onclick="openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200')" class="flex items-center space-x-3 p-3 rounded-xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-indigo-500 transition-all">
-      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-12 h-12 rounded-full object-cover border border-indigo-500" />
-      <div class="flex-1">
-        <h4 class="font-bold text-sm">Rohan Verma</h4>
-        <p class="text-xs text-slate-400">Testing out the new Voice FX track!</p>
-      </div>
-      <span class="text-[10px] text-slate-500">Yesterday</span>
+      <span class="text-[10px] text-slate-500">Online</span>
     </div>
   </div>
 
-  <!-- 2. DIRECT CHAT CONVERSATION VIEW (Hidden by default, opens full screen on click) -->
+  <!-- 2. DIRECT CHAT CONVERSATION VIEW -->
   <div id="chatConversationView" class="hidden absolute inset-0 bg-slate-950 flex flex-col z-20">
     
     <!-- Chat Header -->
@@ -451,12 +442,11 @@
     <!-- Message History Box -->
     <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs no-scrollbar">
       <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 max-w-[80%] mr-auto shadow-md">
-        <p>Hey! Welcome to my chat. How can I help you?</p>
-        <span class="text-[9px] text-slate-400 block text-right mt-1">10:30 AM</span>
+        <p>Loading live messages from Google Sheet...</p>
       </div>
     </div>
 
-    <!-- Basic Input & Send Bar -->
+    <!-- Input & Send Bar -->
     <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2 shrink-0">
       <input 
         id="chatMessageInput"
@@ -474,13 +464,16 @@
 
 </div>
 
-<!-- ================= JAVASCRIPT LOGIC ================= -->
+<!-- ================= GOOGLE SHEETS SYNC LOGIC ================= -->
 <script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
+
   function openDirectChat(userName, userId, avatar) {
     document.getElementById('chatListView').classList.add('hidden');
     document.getElementById('chatConversationView').classList.remove('hidden');
     document.getElementById('activeChatUserName').innerText = userName + ' (' + userId + ')';
     if(avatar) document.getElementById('activeChatAvatar').src = avatar;
+    fetchMessages();
   }
 
   function closeDirectChat() {
@@ -488,20 +481,53 @@
     document.getElementById('chatListView').classList.remove('hidden');
   }
 
+  // Google Sheet se messages fetch karne ka function
+  function fetchMessages() {
+    fetch(SCRIPT_URL)
+      .then(res => res.json())
+      .then(data => {
+        const history = document.getElementById('messageHistory');
+        history.innerHTML = '';
+        if (data.length === 0) {
+          history.innerHTML = `<div class="text-center text-slate-500 py-4">No messages yet. Say hello!</div>`;
+          return;
+        }
+        data.forEach(item => {
+          const isMe = item.sender === "Rahul"; // Aapka naam
+          history.innerHTML += `
+            <div class="p-3 rounded-2xl ${isMe ? 'bg-gradient-to-r from-pink-600/70 to-purple-600/70 border border-pink-500/30 max-w-[80%] ml-auto text-right' : 'bg-slate-900 border border-slate-800 max-w-[80%] mr-auto'} shadow-md">
+              <span class="text-[9px] text-pink-300 block font-bold mb-0.5">${item.sender}</span>
+              <p>${item.message}</p>
+              <span class="text-[8px] text-slate-400 block text-right mt-1">${item.timestamp}</span>
+            </div>
+          `;
+        });
+        history.scrollTop = history.scrollHeight;
+      })
+      .catch(err => console.error("Error fetching messages:", err));
+  }
+
+  // Google Sheet par naya message bhejne ka function
   function sendChatMessage() {
     const input = document.getElementById('chatMessageInput');
     const text = input.value.trim();
     if (!text) return;
 
-    const history = document.getElementById('messageHistory');
-    history.innerHTML += `
-      <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/70 to-purple-600/70 border border-pink-500/30 max-w-[80%] ml-auto text-right shadow-md">
-        <p>${text}</p>
-        <span class="text-[9px] text-pink-200 block text-right mt-1">Just now</span>
-      </div>
-    `;
+    const payload = {
+      sender: "Rahul", // Aapka naam
+      message: text
+    };
+
     input.value = '';
-    history.scrollTop = history.scrollHeight;
+
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(() => {
+      setTimeout(fetchMessages, 1000); // 1 second baad messages refresh karein
+    }).catch(err => console.error("Error sending message:", err));
   }
 </script>
 
