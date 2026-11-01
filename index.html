@@ -7,14 +7,19 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #030712; color: #fff; }
+    body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #fff; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFE000 0%, #799F0C 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden m-0 p-0 bg-slate-950">
 
-  <!-- TOP HEADER -->
+  <!-- TOP APP HEADER -->
   <header class="flex items-center justify-between px-4 py-3 bg-slate-900/90 border-b border-purple-500/20 z-30 shrink-0">
     <div class="flex items-center space-x-2">
       <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-black text-lg shadow-md">V</div>
@@ -52,7 +57,7 @@
     <!-- TAB 2: MASK ROOM -->
     <div id="tab-mask" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
       <h3 class="text-base font-bold text-purple-400">🎭 Anonymous Mask Rooms</h3>
-      <p class="text-xs text-slate-400">Chat and voice-match completely anonymously behind a secret persona.</p>
+      <p class="text-xs text-slate-400">Chat anonymously behind a secret persona.</p>
       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-3">
         <div class="w-16 h-16 bg-purple-950 rounded-full flex items-center justify-center mx-auto text-2xl border border-purple-500">🦊</div>
         <h4 class="font-bold text-sm">Secret Fox Room</h4>
@@ -61,42 +66,13 @@
       </div>
     </div>
 
-    <!-- TAB 3: VIBE MATCH -->
-    <div id="tab-match" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
-      <h3 class="text-base font-bold text-indigo-400">⚡ Vibe Match</h3>
-      <p class="text-xs text-slate-400">Find people matching your frequency right now.</p>
-      <div class="p-6 rounded-2xl bg-gradient-to-b from-indigo-950/40 to-slate-900 border border-indigo-500/30 text-center space-y-4">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-24 h-24 rounded-full object-cover mx-auto border-2 border-indigo-500 shadow-lg" />
-        <h4 class="font-bold text-base">Rohan Verma (VS-5582)</h4>
-        <p class="text-xs text-slate-300">Into music production, front-end development & live audio hosting.</p>
-        <button onclick="switchTab('chats'); openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200');" class="px-6 py-2.5 bg-indigo-600 rounded-xl font-bold text-xs shadow-md">Say Hello</button>
-      </div>
-    </div>
-
-    <!-- TAB 4: RADIO -->
-    <div id="tab-radio" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
-      <h3 class="text-base font-bold text-amber-400">📻 Vibe Radio</h3>
-      <p class="text-xs text-slate-400">Non-stop curated audio streams and voice FX tracks.</p>
-      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center space-x-4">
-        <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-bold text-lg">♫</div>
-        <div class="flex-1">
-          <h4 class="font-bold text-sm">Lo-Fi Chill & Night Vibes</h4>
-          <p class="text-xs text-slate-400">Live stream broadcasting</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 5: CHATS (Live Google Sheet Integration) -->
+    <!-- TAB 3: CHATS (Google Sheet Live Integration) -->
     <div id="tab-chats" class="app-tab hidden flex-1 flex flex-col overflow-hidden relative">
-      
-      <!-- Chat List View -->
       <div id="chatListView" class="flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
         <div class="pb-2 border-b border-slate-800">
           <h3 class="text-base font-bold text-pink-400">💬 Messages (Live Google Sheet)</h3>
           <p class="text-[11px] text-slate-400">Tap a contact to open live chat</p>
         </div>
-
-        <!-- Contact 1 -->
         <div onclick="openDirectChat('Aanya Roy', '#VS-1024', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-pink-500 transition-all shadow-md">
           <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-11 h-11 rounded-full object-cover border border-pink-500" />
           <div class="flex-1 min-w-0">
@@ -105,21 +81,9 @@
           </div>
           <span class="text-[10px] text-emerald-400 font-bold shrink-0">● Online</span>
         </div>
-
-        <!-- Contact 2 -->
-        <div onclick="openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-900 border border-slate-800 cursor-pointer hover:border-indigo-500 transition-all shadow-md">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-11 h-11 rounded-full object-cover border border-indigo-500" />
-          <div class="flex-1 min-w-0">
-            <h4 class="font-bold text-sm truncate">Rohan Verma</h4>
-            <p class="text-xs text-slate-400 truncate">Testing out voice FX track</p>
-          </div>
-          <span class="text-[10px] text-slate-500 shrink-0">Online</span>
-        </div>
       </div>
 
-      <!-- Direct Chat Conversation View -->
       <div id="chatConversationView" class="hidden absolute inset-0 bg-slate-950 flex flex-col z-20">
-        <!-- Sub Header -->
         <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-800 shrink-0">
           <div class="flex items-center space-x-3">
             <button onclick="closeDirectChat()" class="text-xs bg-slate-800 text-pink-400 px-3 py-1.5 rounded-full font-bold">← Back</button>
@@ -127,46 +91,183 @@
             <span id="activeChatUserName" class="text-xs font-bold truncate text-white"></span>
           </div>
         </div>
-        <!-- Message History -->
         <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs no-scrollbar">
           <div class="text-center text-slate-500 py-4">Loading live messages...</div>
         </div>
-        <!-- Input Bar -->
         <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2 shrink-0">
-          <input 
-            id="chatMessageInput"
-            type="text" 
-            placeholder="Type a message..." 
-            class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-pink-500"
-            onkeydown="if(event.key==='Enter') sendChatMessage()"
-          />
-          <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md">
-            Send
-          </button>
+          <input id="chatMessageInput" type="text" placeholder="Type a message..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-pink-500" onkeydown="if(event.key==='Enter') sendChatMessage()"/>
+          <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-md">Send</button>
         </div>
       </div>
-
     </div>
 
-    <!-- TAB 6: PROFILE -->
-    <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
-      <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-3">
-        <div class="w-20 h-20 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full mx-auto flex items-center justify-center text-2xl font-black shadow-lg">R</div>
-        <div>
-          <h3 class="font-bold text-base">Rahul Sharma</h3>
-          <p class="text-xs text-pink-400 font-mono">ID: #VS-1001 · VIP Member</p>
-        </div>
-        <div class="grid grid-cols-2 gap-2 pt-2">
-          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
-            <span class="text-[10px] text-slate-400 block">Balance</span>
-            <span class="font-bold text-sm text-amber-300">150 Coins</span>
-          </div>
-          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800">
-            <span class="text-[10px] text-slate-400 block">Status</span>
-            <span class="font-bold text-sm text-emerald-400">Active</span>
-          </div>
+    <!-- TAB 4: PROFILE (TIKKO / ROCKS AGENCY PREMIUM DESIGN) -->
+    <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col overflow-y-auto no-scrollbar bg-slate-950 text-slate-800">
+      
+      <!-- Top Cover Poster -->
+      <div class="relative w-full h-44 bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 overflow-hidden shrink-0">
+        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600" class="w-full h-full object-cover opacity-60 mix-blend-overlay" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-black/40"></div>
+        <div class="absolute top-3 left-3 text-xs font-bold text-amber-300 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/30 flex items-center space-x-1">
+          <span>🔥 ROCKS AGENCY</span>
         </div>
       </div>
+
+      <!-- Avatar & Main User Card -->
+      <div class="relative px-4 pb-4 bg-slate-950 text-slate-100 -mt-10 rounded-t-3xl border-t border-slate-800">
+        <div class="flex justify-between items-end">
+          <div class="relative -mt-12">
+            <div class="w-20 h-20 rounded-2xl p-1 bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 shadow-xl">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-full h-full object-cover rounded-xl" />
+            </div>
+          </div>
+          <div class="flex space-x-4 text-center text-xs pb-1">
+            <div>
+              <span class="font-extrabold text-sm text-white block">27</span>
+              <span class="text-[10px] text-slate-400">Following</span>
+            </div>
+            <div>
+              <span class="font-extrabold text-sm text-white block">796</span>
+              <span class="text-[10px] text-slate-400">Followers</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <h2 class="text-lg font-black tracking-wide text-white flex items-center">
+            <span>💫 T A N I S H K 💫</span>
+          </h2>
+          <p class="text-[11px] text-slate-400 font-mono mt-0.5">ID: 68891305 📋</p>
+
+          <!-- Badges Row -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <span class="bg-blue-600/30 text-blue-300 border border-blue-500/30 text-[9px] px-2 py-0.5 rounded-full font-bold flex items-center space-x-1">
+              <span>♂ 24</span>
+            </span>
+            <span class="bg-purple-600/30 text-purple-300 border border-purple-500/30 text-[9px] px-2 py-0.5 rounded-full font-bold">
+              🔮 94
+            </span>
+            <span class="bg-gradient-to-r from-pink-600 to-purple-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+              Marquis
+            </span>
+            <span class="bg-gradient-to-r from-amber-500 to-pink-500 text-white text-[9px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+              Legend Top2
+            </span>
+          </div>
+        </div>
+
+        <!-- Sub Tabs -->
+        <div class="flex border-b border-slate-800 mt-4 text-xs font-bold text-slate-400 space-x-6">
+          <span class="text-pink-400 pb-2 border-b-2 border-pink-400">Profile</span>
+          <span class="hover:text-slate-200 pb-2 cursor-pointer">Honor</span>
+        </div>
+
+        <!-- Family Banner -->
+        <div class="mt-4 p-3 rounded-2xl bg-gradient-to-r from-purple-900/60 via-indigo-900/50 to-purple-950/70 border border-purple-500/40 relative overflow-hidden shadow-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100" class="w-10 h-10 rounded-xl object-cover border border-amber-400" />
+              <div>
+                <h4 class="font-extrabold text-xs text-amber-300">VIDHAN ( SANDEEP )</h4>
+                <p class="text-[10px] text-purple-200">👥 147 / 200 Members</p>
+              </div>
+            </div>
+            <span class="text-xs bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded-full shadow-md">⭐ 5.0</span>
+          </div>
+        </div>
+
+        <!-- Top Supporter Podium Banner -->
+        <div class="mt-4 p-3 rounded-2xl bg-gradient-to-b from-indigo-950/70 to-slate-900 border border-indigo-500/30">
+          <h4 class="text-xs font-bold text-slate-300 mb-2">Top Supporter</h4>
+          <div class="flex items-center justify-around py-2">
+            <div class="text-center">
+              <div class="w-10 h-10 rounded-full border-2 border-slate-400 mx-auto overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-full h-full object-cover" />
+              </div>
+              <span class="text-[9px] text-slate-400 block mt-1">Top 2</span>
+            </div>
+            <div class="text-center -mt-2">
+              <div class="w-12 h-12 rounded-full border-2 border-amber-400 mx-auto overflow-hidden shadow-lg">
+                <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-full h-full object-cover" />
+              </div>
+              <span class="text-[10px] font-bold text-amber-400 block mt-1">👑 Top 1</span>
+            </div>
+            <div class="text-center">
+              <div class="w-10 h-10 rounded-full border-2 border-amber-700 mx-auto overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100" class="w-full h-full object-cover" />
+              </div>
+              <span class="text-[9px] text-slate-400 block mt-1">Top 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Levels Card -->
+        <div class="mt-4">
+          <h4 class="text-xs font-bold text-slate-300 mb-2">Level</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 rounded-2xl bg-gradient-to-r from-purple-600/40 to-indigo-600/40 border border-purple-500/30 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-slate-300 block">User level</span>
+                <span class="font-black text-base text-white">94</span>
+              </div>
+              <span class="text-lg">🔮</span>
+            </div>
+            <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/40 to-rose-600/40 border border-pink-500/30 flex items-center justify-between">
+              <div>
+                <span class="text-[10px] text-slate-300 block">Host level</span>
+                <span class="font-black text-base text-white">93</span>
+              </div>
+              <span class="text-lg">👑</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Introduce Bio -->
+        <div class="mt-4">
+          <h4 class="text-xs font-bold text-slate-300 mb-2">Introduce</h4>
+          <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
+            <p class="italic text-purple-300">“ Join Our Team ”</p>
+            <p class="font-semibold text-slate-400">Agency Code 68891305</p>
+          </div>
+        </div>
+
+        <!-- About me Chips -->
+        <div class="mt-4">
+          <h4 class="text-xs font-bold text-slate-300 mb-2">About me</h4>
+          <div class="flex space-x-2">
+            <span class="bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🇮🇳</span> <span>India</span>
+            </span>
+            <span class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-3 py-1 rounded-full text-xs font-bold">
+              A English
+            </span>
+          </div>
+        </div>
+
+        <!-- Interests Chips -->
+        <div class="mt-4 pb-6">
+          <h4 class="text-xs font-bold text-slate-300 mb-2">Interest</h4>
+          <div class="flex flex-wrap gap-2">
+            <span class="bg-emerald-950 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🎣</span> <span>Fishing</span>
+            </span>
+            <span class="bg-cyan-950 border border-cyan-500/30 text-cyan-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🎧</span> <span>Pop</span>
+            </span>
+            <span class="bg-sky-950 border border-sky-500/30 text-sky-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🎻</span> <span>Classical</span>
+            </span>
+            <span class="bg-purple-950 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🎵</span> <span>R&B</span>
+            </span>
+            <span class="bg-lime-950 border border-lime-500/30 text-lime-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
+              <span>🏍️</span> <span>Bike</span>
+            </span>
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
   </main>
@@ -180,14 +281,6 @@
     <button onclick="switchTab('mask')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="mask">
       <span class="text-lg">🎭</span>
       <span class="text-[10px] font-medium">Mask Room</span>
-    </button>
-    <button onclick="switchTab('match')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="match">
-      <span class="text-[10px] font-medium">⚡</span>
-      <span class="text-[10px] font-medium">Vibe Match</span>
-    </button>
-    <button onclick="switchTab('radio')" class="nav-btn flex flex-col items-center text-slate-400" data-tab="radio">
-      <span class="text-lg">📻</span>
-      <span class="text-[10px] font-medium">Radio</span>
     </button>
     <button onclick="switchTab('chats')" class="nav-btn flex flex-col items-center text-slate-400 relative" data-tab="chats">
       <span class="text-lg">💬</span>
@@ -281,15 +374,4 @@
 
       input.value = '';
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      }).then(() => {
-        setTimeout(fetchMessages, 500);
-      }).catch(err => console.error("Error sending message:", err));
-    }
-  </script>
-</body>
-</html>
+      fetch(SCRIPT
