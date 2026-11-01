@@ -406,50 +406,184 @@
       </div>
     </div>
 
-    <!-- ================= TAB 6: CHATS ================= -->
-    <div id="tab-chats" class="hidden space-y-4">
-      <div class="p-4 rounded-2xl bg-purple-950/40 border border-pink-500/20 backdrop-blur-md space-y-4 shadow-xl">
-        <h3 class="text-lg font-black text-pink-400 border-b border-slate-800 pb-2 flex items-center justify-between">
-          <span><i class="fa-solid fa-comments text-pink-500 mr-2"></i>Direct Messages & Inbox</span>
-          <span class="text-xs font-normal text-slate-400">2 Contacts</span>
-        </h3>
+    
+<!-- ================= CHAT / INBOX SECTION ================= -->
+<div id="tab-chats" class="space-y-4">
+  <div class="p-4 rounded-3xl bg-slate-900/90 border border-purple-500/20 backdrop-blur-xl space-y-4 shadow-2xl">
+    
+    <!-- INBOX HEADER & ACTIVE ONLINE USERS CAROUSEL -->
+    <div class="border-b border-slate-800/80 pb-3 space-y-3">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-lg font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
+            💬 Messages <span class="bg-pink-500/20 border border-pink-500/40 text-pink-300 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">2 New</span>
+          </h3>
+          <p class="text-[10px] opacity-60">Connect & chat with your VIP hosts</p>
+        </div>
+        <button class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs hover:bg-pink-500/20 transition-all">
+          🔍
+        </button>
+      </div>
 
-        <!-- Chat List View -->
-        <div id="chatListView" class="space-y-2">
-          <!-- Populated by JS -->
+      <!-- Online Active Hosts Stories Bar -->
+      <div class="flex space-x-3 overflow-x-auto no-scrollbar pt-1">
+        <!-- Story 1 -->
+        <div class="flex flex-col items-center space-y-1 cursor-pointer group">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-12 h-12 rounded-full object-cover p-0.5 border-2 border-emerald-400 group-hover:scale-105 transition-transform" />
+            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+          </div>
+          <span class="text-[10px] opacity-80 font-bold truncate w-12 text-center">Aanya</span>
         </div>
 
-        <!-- Chat Conversation View -->
-        <div id="chatConversationView" class="hidden space-y-3">
-          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-            <button onclick="closeDirectChat()" class="text-xs text-pink-300 font-bold hover:underline flex items-center gap-1">
-              <i class="fa-solid fa-arrow-left"></i> Back to Inbox
-            </button>
-            <div class="text-right">
-              <span id="activeChatUserName" class="text-sm font-extrabold text-white block"></span>
-              <span id="activeChatUserId" class="text-[10px] text-pink-400 font-mono"></span>
-            </div>
+        <!-- Story 2 -->
+        <div class="flex flex-col items-center space-y-1 cursor-pointer group">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-12 h-12 rounded-full object-cover p-0.5 border-2 border-emerald-400 group-hover:scale-105 transition-transform" />
+            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
           </div>
+          <span class="text-[10px] opacity-80 font-bold truncate w-12 text-center">Rohan</span>
+        </div>
 
-          <div id="messageHistory" class="h-72 overflow-y-auto space-y-2.5 p-3 bg-slate-950/90 rounded-xl border border-slate-800 text-xs no-scrollbar">
-            <!-- Messages rendered by JS -->
+        <!-- Story 3 -->
+        <div class="flex flex-col items-center space-y-1 cursor-pointer group">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-12 h-12 rounded-full object-cover p-0.5 border-2 border-pink-500 group-hover:scale-105 transition-transform" />
+            <span class="absolute bottom-0 right-0 w-3 h-3 bg-slate-600 border-2 border-slate-950 rounded-full"></span>
           </div>
-
-          <div class="flex space-x-2">
-            <input 
-              id="chatMessageInput"
-              type="text" 
-              placeholder="Type a message..." 
-              class="flex-1 bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-xs outline-none focus:border-pink-500 text-white placeholder-slate-500"
-              onkeydown="if(event.key==='Enter') sendChatMessage()"
-            />
-            <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all">
-              <i class="fa-solid fa-paper-plane"></i>
-            </button>
-          </div>
+          <span class="text-[10px] opacity-80 font-bold truncate w-12 text-center">Priya</span>
         </div>
       </div>
     </div>
+
+    <!-- 1. CHAT LIST VIEW (Inbox Conversations) -->
+    <div id="chatListView" class="space-y-2">
+      <!-- Conversation 1 -->
+      <div onclick="openDirectChat('Aanya Roy', '#VS-1024', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-950/70 border border-slate-800/80 cursor-pointer hover:border-pink-500/50 hover:bg-purple-950/30 transition-all shadow-md group">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-12 h-12 rounded-full object-cover border-2 border-pink-500/60 group-hover:scale-105 transition-transform" />
+          <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-center mb-0.5">
+            <h4 class="font-bold text-sm text-white group-hover:text-pink-300 transition-colors flex items-center gap-1.5">
+              Aanya Roy <span class="text-[9px] bg-pink-500/20 text-pink-300 border border-pink-500/30 px-1.5 py-0.5 rounded-full font-mono">👑 20/m</span>
+            </h4>
+            <span class="text-[10px] text-slate-400">10:32 AM</span>
+          </div>
+          <p class="text-[11px] text-slate-300 line-clamp-1 font-medium">🎙️ Voice Note (0:15) • Tap to play</p>
+        </div>
+        <div class="flex flex-col items-end space-y-1">
+          <span class="w-2.5 h-2.5 bg-pink-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(236,72,153,0.8)]"></span>
+        </div>
+      </div>
+
+      <!-- Conversation 2 -->
+      <div onclick="openDirectChat('Rohan Verma', '#VS-5582', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200')" class="flex items-center space-x-3 p-3 rounded-2xl bg-slate-950/70 border border-slate-800/80 cursor-pointer hover:border-pink-500/50 hover:bg-purple-950/30 transition-all shadow-md group">
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" class="w-12 h-12 rounded-full object-cover border-2 border-indigo-500/60 group-hover:scale-105 transition-transform" />
+          <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full"></span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between items-center mb-0.5">
+            <h4 class="font-bold text-sm text-white group-hover:text-indigo-300 transition-colors">Rohan Verma</h4>
+            <span class="text-[10px] text-slate-400">Yesterday</span>
+          </div>
+          <p class="text-[11px] opacity-70 text-slate-400 line-clamp-1">Loved the new concert studio reverb track!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. DIRECT CHAT CONVERSATION VIEW (Inside Chat Window) -->
+    <div id="chatConversationView" class="hidden space-y-3">
+      
+      <!-- Top Chat Header -->
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+        <div class="flex items-center space-x-2.5">
+          <button onclick="closeDirectChat()" class="p-1.5 rounded-full bg-slate-800 text-pink-300 hover:bg-slate-700 transition-all text-xs font-bold">
+            ←
+          </button>
+          <div class="relative">
+            <img id="activeChatAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-9 h-9 rounded-full object-cover border border-pink-500" />
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border border-slate-950 rounded-full"></span>
+          </div>
+          <div>
+            <h4 id="activeChatUserName" class="text-xs font-black text-white flex items-center gap-1">Aanya Roy</h4>
+            <span class="text-[9px] text-emerald-400 font-semibold block">● Online | VIP Host</span>
+          </div>
+        </div>
+
+        <!-- Quick Call Trigger from Chat -->
+        <button onclick="startVIPCall('Aanya Roy', 20)" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-white px-3 py-1.5 rounded-full font-black text-[11px] shadow-lg shadow-emerald-500/20 active:scale-95 transition-all flex items-center space-x-1">
+          <span>📞 Call</span>
+        </button>
+      </div>
+
+      <!-- Messages History Scroll Container -->
+      <div id="messageHistory" class="h-72 overflow-y-auto space-y-3 p-3 bg-slate-950/90 rounded-2xl border border-slate-800/80 text-xs no-scrollbar">
+        
+        <!-- Host Message Left (Voice Note Card) -->
+        <div class="flex items-end space-x-2 max-w-[85%] mr-auto">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200" class="w-6 h-6 rounded-full object-cover border border-pink-500" />
+          <div class="p-3 rounded-2xl rounded-bl-none bg-slate-900 border border-slate-800 text-slate-100 space-y-1.5 shadow-md">
+            <p class="text-[11px] font-medium">Hey Rahul! Check out this new voice preview 🎙️</p>
+            <!-- Audio Bar Component -->
+            <div class="flex items-center space-x-2 bg-slate-950 p-2 rounded-xl border border-purple-500/30">
+              <button class="w-7 h-7 rounded-full bg-pink-500 text-white flex items-center justify-center font-bold text-xs shadow-md">▶</button>
+              <div class="flex-1 flex items-center space-x-0.5">
+                <span class="w-1 h-3 bg-pink-500 rounded-full animate-pulse"></span>
+                <span class="w-1 h-5 bg-pink-400 rounded-full"></span>
+                <span class="w-1 h-2 bg-purple-500 rounded-full"></span>
+                <span class="w-1 h-4 bg-indigo-500 rounded-full"></span>
+                <span class="w-1 h-6 bg-pink-500 rounded-full"></span>
+                <span class="w-1 h-3 bg-purple-400 rounded-full"></span>
+              </div>
+              <span class="text-[9px] text-pink-300 font-mono font-bold">0:15</span>
+            </div>
+            <span class="text-[9px] text-slate-400 block text-right">10:30 AM</span>
+          </div>
+        </div>
+
+        <!-- My Message Right (Outgoing Bubble) -->
+        <div class="flex items-end space-x-2 max-w-[80%] ml-auto justify-end">
+          <div class="p-3 rounded-2xl rounded-br-none bg-gradient-to-r from-pink-600/60 to-purple-600/60 border border-pink-500/40 text-white space-y-1 shadow-md">
+            <p class="text-[11px]">Awesome voice note! Sent you a gift 🎁</p>
+            <span class="text-[9px] text-pink-200 block text-right">10:32 AM ✓✓</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Chat Bottom Input Bar -->
+      <div class="flex items-center space-x-2 bg-slate-950/90 p-2 rounded-2xl border border-slate-800">
+        <!-- Voice Record Quick Icon -->
+        <button onclick="alert('🎙️ Hold to record audio message!')" class="p-2 rounded-xl bg-purple-950 border border-purple-500/30 text-purple-300 hover:bg-purple-900 transition-all text-sm">
+          🎙️
+        </button>
+
+        <input 
+          id="chatMessageInput"
+          type="text" 
+          placeholder="Type a message or emoji..." 
+          class="flex-1 bg-transparent text-xs text-white outline-none px-2 font-medium"
+          onkeydown="if(event.key==='Enter') sendChatMessage()"
+        />
+
+        <!-- Send Gift Shortcut in Chat -->
+        <button onclick="alert('🎁 Gift selector opened!')" class="p-2 text-amber-300 hover:scale-110 transition-transform text-sm">
+          🎁
+        </button>
+
+        <!-- Send Button -->
+        <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all shadow-md">
+          Send
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
     <!-- ================= TAB 7: SAVED BOOKMARKS ================= -->
     <div id="tab-saved" class="hidden space-y-4">
