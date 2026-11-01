@@ -405,12 +405,11 @@
         </div>
       </div>
     </div>
-
- <!-- ================= BASIC & CLEAN CHAT / INBOX SECTION ================= -->
+<!-- ================= BASIC & CLEAN CHAT / INBOX SECTION ================= -->
 <div id="tab-chats" class="flex-1 flex flex-col h-[calc(100vh-100px)] bg-slate-950 text-white p-2">
   
   <!-- 1. CHAT LIST VIEW (Inbox) -->
-  <div id="chatListView" class="flex-1 flex flex-col space-y-3 overflow-y-auto">
+  <div id="chatListView" class="flex-1 flex flex-col space-y-3 overflow-y-auto no-scrollbar">
     <div class="p-3 border-b border-slate-800">
       <h3 class="text-lg font-bold text-pink-400">💬 Messages</h3>
       <p class="text-xs text-slate-400">Tap a chat to start messaging</p>
@@ -437,36 +436,36 @@
     </div>
   </div>
 
-  <!-- 2. DIRECT CHAT CONVERSATION VIEW (Hidden by default, opens on tap) -->
-  <div id="chatConversationView" class="hidden flex-1 flex flex-col bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+  <!-- 2. DIRECT CHAT CONVERSATION VIEW (Hidden by default, opens full screen on click) -->
+  <div id="chatConversationView" class="hidden absolute inset-0 bg-slate-950 flex flex-col z-20">
     
     <!-- Chat Header -->
-    <div class="flex items-center justify-between p-3 bg-slate-950 border-b border-slate-800">
+    <div class="flex items-center justify-between p-3 bg-slate-900 border-b border-slate-800 shrink-0">
       <div class="flex items-center space-x-3">
-        <button onclick="closeDirectChat()" class="text-xs bg-slate-800 text-pink-400 px-3 py-1 rounded-full font-bold">← Back</button>
+        <button onclick="closeDirectChat()" class="text-xs bg-slate-800 text-pink-400 px-3 py-1.5 rounded-full font-bold">← Back</button>
         <img id="activeChatAvatar" src="" class="w-9 h-9 rounded-full object-cover border border-pink-500" />
-        <span id="activeChatUserName" class="text-sm font-bold"></span>
+        <span id="activeChatUserName" class="text-sm font-bold truncate"></span>
       </div>
     </div>
 
     <!-- Message History Box -->
-    <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs">
-      <div class="p-2.5 rounded-lg bg-slate-800 max-w-[80%] mr-auto">
+    <div id="messageHistory" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs no-scrollbar">
+      <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 max-w-[80%] mr-auto shadow-md">
         <p>Hey! Welcome to my chat. How can I help you?</p>
         <span class="text-[9px] text-slate-400 block text-right mt-1">10:30 AM</span>
       </div>
     </div>
 
     <!-- Basic Input & Send Bar -->
-    <div class="p-3 bg-slate-950 border-t border-slate-800 flex items-center space-x-2">
+    <div class="p-3 bg-slate-900 border-t border-slate-800 flex items-center space-x-2 shrink-0">
       <input 
         id="chatMessageInput"
         type="text" 
         placeholder="Type a message..." 
-        class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-pink-500"
+        class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-pink-500"
         onkeydown="if(event.key==='Enter') sendChatMessage()"
       />
-      <button onclick="sendChatMessage()" class="bg-pink-600 text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-pink-500 transition-all">
+      <button onclick="sendChatMessage()" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs hover:opacity-90 active:scale-95 transition-all shadow-md">
         Send
       </button>
     </div>
@@ -496,7 +495,7 @@
 
     const history = document.getElementById('messageHistory');
     history.innerHTML += `
-      <div class="p-2.5 rounded-lg bg-pink-600/40 border border-pink-500/30 max-w-[80%] ml-auto text-right">
+      <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/70 to-purple-600/70 border border-pink-500/30 max-w-[80%] ml-auto text-right shadow-md">
         <p>${text}</p>
         <span class="text-[9px] text-pink-200 block text-right mt-1">Just now</span>
       </div>
@@ -505,6 +504,7 @@
     history.scrollTop = history.scrollHeight;
   }
 </script>
+
 
     <!-- ================= TAB 7: SAVED BOOKMARKS ================= -->
     <div id="tab-saved" class="hidden space-y-4">
