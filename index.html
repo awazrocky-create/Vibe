@@ -27,6 +27,11 @@
     </div>
   </header>
 
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-14 left-1/2 -translate-x-1/2 bg-pink-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-2xl z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+    Action Successful!
+  </div>
+
   <!-- MAIN CONTAINER WITH TABS -->
   <main class="flex-1 relative flex flex-col overflow-hidden max-w-md w-full mx-auto pb-16">
 
@@ -57,11 +62,11 @@
         <div class="w-16 h-16 bg-purple-950 rounded-full flex items-center justify-center mx-auto text-2xl border border-purple-500">🦊</div>
         <h4 class="font-bold text-sm">Secret Fox Room</h4>
         <p class="text-xs text-slate-400">4 users currently active behind the mask.</p>
-        <button onclick="alert('Mask room session started!')" class="px-4 py-2 bg-purple-600 rounded-xl font-bold text-xs">Enter Mask</button>
+        <button onclick="showToast('Mask room session started!')" class="px-4 py-2 bg-purple-600 rounded-xl font-bold text-xs">Enter Mask</button>
       </div>
     </div>
 
-    <!-- TAB 3: CHATS (Google Sheet Live Integration) -->
+    <!-- TAB 3: CHATS -->
     <div id="tab-chats" class="app-tab hidden flex-1 flex flex-col overflow-hidden relative">
       <div id="chatListView" class="flex-1 flex flex-col p-3 space-y-3 overflow-y-auto no-scrollbar">
         <div class="pb-2 border-b border-slate-800">
@@ -95,7 +100,8 @@
         </div>
       </div>
     </div>
-    <!-- TAB 4: PROFILE (TIKKO / ROCKS AGENCY PREMIUM DESIGN) -->
+
+    <!-- TAB 4: PROFILE -->
     <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col overflow-y-auto no-scrollbar bg-slate-950 text-slate-800">
       
       <!-- Top Cover Poster -->
@@ -105,6 +111,10 @@
         <div class="absolute top-3 left-3 text-xs font-bold text-amber-300 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/30 flex items-center space-x-1">
           <span>🔥 ROCKS AGENCY</span>
         </div>
+        <!-- EDIT BUTTON -->
+        <button onclick="openEditModal()" class="absolute top-3 right-3 text-xs font-bold text-white bg-pink-600/80 hover:bg-pink-600 backdrop-blur-md px-3 py-1 rounded-full border border-pink-400 shadow-md transition-all">
+          ✏️ Edit Profile
+        </button>
       </div>
 
       <!-- Avatar & Main User Card -->
@@ -112,15 +122,15 @@
         <div class="flex justify-between items-end">
           <div class="relative -mt-12">
             <div class="w-20 h-20 rounded-2xl p-1 bg-gradient-to-tr from-amber-400 via-pink-500 to-purple-600 shadow-xl">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-full h-full object-cover rounded-xl" />
+              <img id="profileAvatarImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200" class="w-full h-full object-cover rounded-xl" />
             </div>
           </div>
           <div class="flex space-x-4 text-center text-xs pb-1">
-            <div>
+            <div class="cursor-pointer" onclick="showToast('Following: 27 users')">
               <span class="font-extrabold text-sm text-white block">27</span>
               <span class="text-[10px] text-slate-400">Following</span>
             </div>
-            <div>
+            <div class="cursor-pointer" onclick="showToast('Followers: 796 users')">
               <span class="font-extrabold text-sm text-white block">796</span>
               <span class="text-[10px] text-slate-400">Followers</span>
             </div>
@@ -128,10 +138,12 @@
         </div>
 
         <div class="mt-3">
-          <h2 class="text-lg font-black tracking-wide text-white flex items-center">
-            <span>💫 T A N I S H K 💫</span>
+          <h2 class="text-lg font-black tracking-wide text-white flex items-center space-x-1">
+            <span id="profileNameDisplay">💫 T A N I S H K 💫</span>
           </h2>
-          <p class="text-[11px] text-slate-400 font-mono mt-0.5">ID: 68891305 📋</p>
+          <p onclick="copyID()" class="text-[11px] text-slate-400 font-mono mt-0.5 cursor-pointer hover:text-pink-400 transition-colors inline-block">
+            ID: <span id="profileIDDisplay">68891305</span> 📋
+          </p>
 
           <!-- Badges Row -->
           <div class="flex flex-wrap gap-1.5 mt-2">
@@ -152,111 +164,131 @@
 
         <!-- Sub Tabs -->
         <div class="flex border-b border-slate-800 mt-4 text-xs font-bold text-slate-400 space-x-6">
-          <span class="text-pink-400 pb-2 border-b-2 border-pink-400">Profile</span>
-          <span class="hover:text-slate-200 pb-2 cursor-pointer">Honor</span>
+          <span id="subtab-btn-profile" onclick="switchSubTab('profile')" class="text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer">Profile</span>
+          <span id="subtab-btn-honor" onclick="switchSubTab('honor')" class="hover:text-slate-200 pb-2 cursor-pointer">Honor</span>
         </div>
 
-        <!-- Family Banner -->
-        <div class="mt-4 p-3 rounded-2xl bg-gradient-to-r from-purple-900/60 via-indigo-900/50 to-purple-950/70 border border-purple-500/40 relative overflow-hidden shadow-lg">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100" class="w-10 h-10 rounded-xl object-cover border border-amber-400" />
-              <div>
-                <h4 class="font-extrabold text-xs text-amber-300">VIDHAN ( SANDEEP )</h4>
-                <p class="text-[10px] text-purple-200">👥 147 / 200 Members</p>
+        <!-- PROFILE CONTENT SUBTAB -->
+        <div id="subtab-content-profile">
+          <!-- Family Banner -->
+          <div class="mt-4 p-3 rounded-2xl bg-gradient-to-r from-purple-900/60 via-indigo-900/50 to-purple-950/70 border border-purple-500/40 relative overflow-hidden shadow-lg">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <img src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=100" class="w-10 h-10 rounded-xl object-cover border border-amber-400" />
+                <div>
+                  <h4 class="font-extrabold text-xs text-amber-300">VIDHAN ( SANDEEP )</h4>
+                  <p class="text-[10px] text-purple-200">👥 147 / 200 Members</p>
+                </div>
+              </div>
+              <span class="text-xs bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded-full shadow-md">⭐ 5.0</span>
+            </div>
+          </div>
+
+          <!-- Top Supporter Podium Banner -->
+          <div class="mt-4 p-3 rounded-2xl bg-gradient-to-b from-indigo-950/70 to-slate-900 border border-indigo-500/30">
+            <h4 class="text-xs font-bold text-slate-300 mb-2">Top Supporter</h4>
+            <div class="flex items-center justify-around py-2">
+              <div class="text-center cursor-pointer" onclick="showToast('Top 2 Supporter')">
+                <div class="w-10 h-10 rounded-full border-2 border-slate-400 mx-auto overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-full h-full object-cover" />
+                </div>
+                <span class="text-[9px] text-slate-400 block mt-1">Top 2</span>
+              </div>
+              <div class="text-center -mt-2 cursor-pointer" onclick="showToast('Top 1 Supporter')">
+                <div class="w-12 h-12 rounded-full border-2 border-amber-400 mx-auto overflow-hidden shadow-lg">
+                  <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-full h-full object-cover" />
+                </div>
+                <span class="text-[10px] font-bold text-amber-400 block mt-1">👑 Top 1</span>
+              </div>
+              <div class="text-center cursor-pointer" onclick="showToast('Top 3 Supporter')">
+                <div class="w-10 h-10 rounded-full border-2 border-amber-700 mx-auto overflow-hidden">
+                  <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100" class="w-full h-full object-cover" />
+                </div>
+                <span class="text-[9px] text-slate-400 block mt-1">Top 3</span>
               </div>
             </div>
-            <span class="text-xs bg-amber-400 text-slate-950 font-black px-2.5 py-1 rounded-full shadow-md">⭐ 5.0</span>
+          </div>
+
+          <!-- Levels Card -->
+          <div class="mt-4">
+            <h4 class="text-xs font-bold text-slate-300 mb-2">Level</h4>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="p-3 rounded-2xl bg-gradient-to-r from-purple-600/40 to-indigo-600/40 border border-purple-500/30 flex items-center justify-between cursor-pointer" onclick="showToast('User Level: 94')">
+                <div>
+                  <span class="text-[10px] text-slate-300 block">User level</span>
+                  <span class="font-black text-base text-white">94</span>
+                </div>
+                <span class="text-lg">🔮</span>
+              </div>
+              <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/40 to-rose-600/40 border border-pink-500/30 flex items-center justify-between cursor-pointer" onclick="showToast('Host Level: 93')">
+                <div>
+                  <span class="text-[10px] text-slate-300 block">Host level</span>
+                  <span class="font-black text-base text-white">93</span>
+                </div>
+                <span class="text-lg">👑</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Introduce Bio -->
+          <div class="mt-4">
+            <h4 class="text-xs font-bold text-slate-300 mb-2">Introduce</h4>
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
+              <p id="profileIntroBio" class="italic text-purple-300">“ Join Our Team ”</p>
+              <p id="profileAgencyCode" class="font-semibold text-slate-400">Agency Code 68891305</p>
+            </div>
+          </div>
+
+          <!-- About me Chips -->
+          <div class="mt-4">
+            <h4 class="text-xs font-bold text-slate-300 mb-2">About me</h4>
+            <div class="flex space-x-2">
+              <span class="bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Region: India')">
+                <span>🇮🇳</span> <span>India</span>
+              </span>
+              <span class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-3 py-1 rounded-full text-xs font-bold cursor-pointer" onclick="showToast('Language: English')">
+                A English
+              </span>
+            </div>
+          </div>
+
+          <!-- Interests Chips -->
+          <div class="mt-4 pb-6">
+            <h4 class="text-xs font-bold text-slate-300 mb-2">Interest</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="bg-emerald-950 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Fishing 🎣')">
+                <span>🎣</span> <span>Fishing</span>
+              </span>
+              <span class="bg-cyan-950 border border-cyan-500/30 text-cyan-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Pop 🎧')">
+                <span>🎧</span> <span>Pop</span>
+              </span>
+              <span class="bg-sky-950 border border-sky-500/30 text-sky-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Classical 🎻')">
+                <span>🎻</span> <span>Classical</span>
+              </span>
+              <span class="bg-purple-950 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: R&B 🎵')">
+                <span>🎵</span> <span>R&B</span>
+              </span>
+              <span class="bg-lime-950 border border-lime-500/30 text-lime-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1 cursor-pointer" onclick="showToast('Interest: Bike 🏍️')">
+                <span>🏍️</span> <span>Bike</span>
+              </span>
+            </div>
           </div>
         </div>
 
-        <!-- Top Supporter Podium Banner -->
-        <div class="mt-4 p-3 rounded-2xl bg-gradient-to-b from-indigo-950/70 to-slate-900 border border-indigo-500/30">
-          <h4 class="text-xs font-bold text-slate-300 mb-2">Top Supporter</h4>
-          <div class="flex items-center justify-around py-2">
-            <div class="text-center">
-              <div class="w-10 h-10 rounded-full border-2 border-slate-400 mx-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-full h-full object-cover" />
-              </div>
-              <span class="text-[9px] text-slate-400 block mt-1">Top 2</span>
-            </div>
-            <div class="text-center -mt-2">
-              <div class="w-12 h-12 rounded-full border-2 border-amber-400 mx-auto overflow-hidden shadow-lg">
-                <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=100" class="w-full h-full object-cover" />
-              </div>
-              <span class="text-[10px] font-bold text-amber-400 block mt-1">👑 Top 1</span>
-            </div>
-            <div class="text-center">
-              <div class="w-10 h-10 rounded-full border-2 border-amber-700 mx-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100" class="w-full h-full object-cover" />
-              </div>
-              <span class="text-[9px] text-slate-400 block mt-1">Top 3</span>
-            </div>
+        <!-- HONOR SUBTAB CONTENT (HIDDEN BY DEFAULT) -->
+        <div id="subtab-content-honor" class="hidden mt-4 pb-6 space-y-3">
+          <div class="p-4 rounded-2xl bg-gradient-to-r from-amber-900/40 to-purple-900/40 border border-amber-500/30 text-center space-y-2">
+            <span class="text-3xl">🏆</span>
+            <h4 class="font-bold text-sm text-amber-300">Rocks Agency Hall of Fame</h4>
+            <p class="text-xs text-slate-300">Awarded for top monthly support & live room contributions.</p>
           </div>
-        </div>
-
-        <!-- Levels Card -->
-        <div class="mt-4">
-          <h4 class="text-xs font-bold text-slate-300 mb-2">Level</h4>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="p-3 rounded-2xl bg-gradient-to-r from-purple-600/40 to-indigo-600/40 border border-purple-500/30 flex items-center justify-between">
-              <div>
-                <span class="text-[10px] text-slate-300 block">User level</span>
-                <span class="font-black text-base text-white">94</span>
-              </div>
-              <span class="text-lg">🔮</span>
-            </div>
-            <div class="p-3 rounded-2xl bg-gradient-to-r from-pink-600/40 to-rose-600/40 border border-pink-500/30 flex items-center justify-between">
-              <div>
-                <span class="text-[10px] text-slate-300 block">Host level</span>
-                <span class="font-black text-base text-white">93</span>
-              </div>
-              <span class="text-lg">👑</span>
-            </div>
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs flex justify-between items-center">
+            <span>🎖️ VIP Diamond Medal</span>
+            <span class="text-emerald-400 font-bold">Unlocked</span>
           </div>
-        </div>
-
-        <!-- Introduce Bio -->
-        <div class="mt-4">
-          <h4 class="text-xs font-bold text-slate-300 mb-2">Introduce</h4>
-          <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
-            <p class="italic text-purple-300">“ Join Our Team ”</p>
-            <p class="font-semibold text-slate-400">Agency Code 68891305</p>
-          </div>
-        </div>
-
-        <!-- About me Chips -->
-        <div class="mt-4">
-          <h4 class="text-xs font-bold text-slate-300 mb-2">About me</h4>
-          <div class="flex space-x-2">
-            <span class="bg-slate-900 border border-slate-800 text-slate-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🇮🇳</span> <span>India</span>
-            </span>
-            <span class="bg-blue-900/40 border border-blue-500/30 text-blue-300 px-3 py-1 rounded-full text-xs font-bold">
-              A English
-            </span>
-          </div>
-        </div>
-
-        <!-- Interests Chips -->
-        <div class="mt-4 pb-6">
-          <h4 class="text-xs font-bold text-slate-300 mb-2">Interest</h4>
-          <div class="flex flex-wrap gap-2">
-            <span class="bg-emerald-950 border border-emerald-500/30 text-emerald-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🎣</span> <span>Fishing</span>
-            </span>
-            <span class="bg-cyan-950 border border-cyan-500/30 text-cyan-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🎧</span> <span>Pop</span>
-            </span>
-            <span class="bg-sky-950 border border-sky-500/30 text-sky-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🎻</span> <span>Classical</span>
-            </span>
-            <span class="bg-purple-950 border border-purple-500/30 text-purple-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🎵</span> <span>R&B</span>
-            </span>
-            <span class="bg-lime-950 border border-lime-500/30 text-lime-300 px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-              <span>🏍️</span> <span>Bike</span>
-            </span>
+          <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs flex justify-between items-center">
+            <span>👑 Rocks Master Badge</span>
+            <span class="text-amber-400 font-bold">Level 5</span>
           </div>
         </div>
 
@@ -265,6 +297,39 @@
     </div>
 
   </main>
+  <!-- EDIT PROFILE MODAL POPUP -->
+  <div id="editProfileModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-xs p-5 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-sm text-pink-400">Edit Profile Details</h3>
+        <button onclick="closeEditModal()" class="text-slate-400 hover:text-white font-bold text-sm">✕</button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 mb-1">Display Name</label>
+          <input id="editNameInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">User ID</label>
+          <input id="editIDInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Introduce Tagline</label>
+          <input id="editBioInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Avatar Image URL</label>
+          <input id="editAvatarInput" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-pink-500" />
+        </div>
+      </div>
+
+      <div class="flex space-x-2 pt-2">
+        <button onclick="closeEditModal()" class="w-1/2 py-2 bg-slate-800 rounded-xl font-bold text-xs">Cancel</button>
+        <button onclick="saveProfileChanges()" class="w-1/2 py-2 bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl font-bold text-xs shadow-md">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- BOTTOM NAVIGATION BAR -->
   <nav class="absolute bottom-0 left-0 right-0 h-16 bg-slate-900/95 border-t border-slate-800 backdrop-blur-md flex items-center justify-around px-2 z-40">
@@ -286,11 +351,24 @@
     </button>
   </nav>
 
-  <!-- JAVASCRIPT LOGIC FOR SWITCHING TABS & GOOGLE SHEET SYNC -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
     let autoRefreshInterval = null;
 
+    // Toast Notification logic
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2000);
+    }
+
+    // Switch Main Bottom Navigation Tabs
     function switchTab(tabId) {
       document.querySelectorAll('.app-tab').forEach(tab => tab.classList.add('hidden'));
       const activeTab = document.getElementById('tab-' + tabId);
@@ -310,6 +388,91 @@
       }
     }
 
+    // Switch Sub Tabs Inside Profile (Profile vs Honor)
+    function switchSubTab(type) {
+      const pTab = document.getElementById('subtab-content-profile');
+      const hTab = document.getElementById('subtab-content-honor');
+      const pBtn = document.getElementById('subtab-btn-profile');
+      const hBtn = document.getElementById('subtab-btn-honor');
+
+      if(type === 'profile') {
+        pTab.classList.remove('hidden');
+        hTab.classList.add('hidden');
+        pBtn.className = "text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer";
+        hBtn.className = "hover:text-slate-200 pb-2 cursor-pointer";
+      } else {
+        hTab.classList.remove('hidden');
+        pTab.classList.add('hidden');
+        hBtn.className = "text-pink-400 pb-2 border-b-2 border-pink-400 cursor-pointer";
+        pBtn.className = "hover:text-slate-200 pb-2 cursor-pointer";
+      }
+    }
+
+    // Copy ID functionality
+    function copyID() {
+      const idText = document.getElementById('profileIDDisplay').innerText;
+      navigator.clipboard.writeText(idText);
+      showToast('Copied ID: ' + idText);
+    }
+
+    // Modal Edit Profile Logic
+    function openEditModal() {
+      document.getElementById('editNameInput').value = document.getElementById('profileNameDisplay').innerText;
+      document.getElementById('editIDInput').value = document.getElementById('profileIDDisplay').innerText;
+      document.getElementById('editBioInput').value = document.getElementById('profileIntroBio').innerText.replace(/[“"]/g, '');
+      document.getElementById('editAvatarInput').value = document.getElementById('profileAvatarImg').src;
+      document.getElementById('editProfileModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editProfileModal').classList.add('hidden');
+    }
+
+    function saveProfileChanges() {
+      const name = document.getElementById('editNameInput').value.trim();
+      const id = document.getElementById('editIDInput').value.trim();
+      const bio = document.getElementById('editBioInput').value.trim();
+      const avatar = document.getElementById('editAvatarInput').value.trim();
+
+      if(name) {
+        document.getElementById('profileNameDisplay').innerText = name;
+        localStorage.setItem('vibespace_name', name);
+      }
+      if(id) {
+        document.getElementById('profileIDDisplay').innerText = id;
+        document.getElementById('profileAgencyCode').innerText = "Agency Code " + id;
+        localStorage.setItem('vibespace_id', id);
+      }
+      if(bio) {
+        document.getElementById('profileIntroBio').innerText = `“ ${bio} ”`;
+        localStorage.setItem('vibespace_bio', bio);
+      }
+      if(avatar) {
+        document.getElementById('profileAvatarImg').src = avatar;
+        localStorage.setItem('vibespace_avatar', avatar);
+      }
+
+      closeEditModal();
+      showToast('Profile Updated Successfully!');
+    }
+
+    // Load Saved Data from LocalStorage on Startup
+    function loadSavedProfile() {
+      const sName = localStorage.getItem('vibespace_name');
+      const sID = localStorage.getItem('vibespace_id');
+      const sBio = localStorage.getItem('vibespace_bio');
+      const sAvatar = localStorage.getItem('vibespace_avatar');
+
+      if(sName) document.getElementById('profileNameDisplay').innerText = sName;
+      if(sID) {
+        document.getElementById('profileIDDisplay').innerText = sID;
+        document.getElementById('profileAgencyCode').innerText = "Agency Code " + sID;
+      }
+      if(sBio) document.getElementById('profileIntroBio').innerText = `“ ${sBio} ”`;
+      if(sAvatar) document.getElementById('profileAvatarImg').src = sAvatar;
+    }
+
+    // Google Sheets Direct Chat Logic
     function openDirectChat(userName, userId, avatar) {
       document.getElementById('chatListView').classList.add('hidden');
       document.getElementById('chatConversationView').classList.remove('hidden');
@@ -378,6 +541,11 @@
         setTimeout(fetchMessages, 500);
       }).catch(err => console.error("Error sending message:", err));
     }
+
+    // Initialize Saved Profile Data on Page Load
+    window.onload = function() {
+      loadSavedProfile();
+    };
   </script>
 </body>
 </html>
