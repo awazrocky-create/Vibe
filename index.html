@@ -10,11 +10,6 @@
     body { font-family: 'Inter', sans-serif; background-color: #09090b; color: #fff; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .gold-gradient-text {
-      background: linear-gradient(135deg, #FFE000 0%, #799F0C 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
   </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden m-0 p-0 bg-slate-950">
@@ -100,7 +95,6 @@
         </div>
       </div>
     </div>
-
     <!-- TAB 4: PROFILE (TIKKO / ROCKS AGENCY PREMIUM DESIGN) -->
     <div id="tab-profile" class="app-tab hidden flex-1 flex flex-col overflow-y-auto no-scrollbar bg-slate-950 text-slate-800">
       
@@ -292,14 +286,15 @@
     </button>
   </nav>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC FOR SWITCHING TABS & GOOGLE SHEET SYNC -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-2aartHO1pr8hsVhCOYiy3Y4JCYSBZa6ESN2LoMb9RswiaJZCoPPfTzxXtIopsRrRnQ/exec";
     let autoRefreshInterval = null;
 
     function switchTab(tabId) {
       document.querySelectorAll('.app-tab').forEach(tab => tab.classList.add('hidden'));
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeTab = document.getElementById('tab-' + tabId);
+      if(activeTab) activeTab.classList.remove('hidden');
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.classList.remove('text-pink-500');
@@ -374,4 +369,15 @@
 
       input.value = '';
 
-      fetch(SCRIPT
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        setTimeout(fetchMessages, 500);
+      }).catch(err => console.error("Error sending message:", err));
+    }
+  </script>
+</body>
+</html>
